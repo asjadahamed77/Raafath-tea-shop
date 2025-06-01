@@ -3,6 +3,7 @@ import img1 from '../assets/box/hero1.svg'
 import img2 from '../assets/box/hero2.svg'
 import img3 from '../assets/box/hero3.svg'
 import img4 from '../assets/box/hero4.svg'
+import { Link } from 'react-router-dom'
 
 const BuildBox = () => {
     const box = [
@@ -49,7 +50,7 @@ const BuildBox = () => {
         ))
       }
      </div>
-     <button className='mt-20 w-fit py-[16px] px-[50px] text-[18px] font-light bg-primaryColor text-secondaryColor rounded-full cursor-pointer duration-300 hover:opacity-75 transition-opacity'>Build a Box</button>
+     <Link to={'/box'} className='mt-20 w-fit py-[16px] px-[50px] text-[18px] font-light bg-primaryColor text-secondaryColor rounded-full cursor-pointer duration-300 hover:opacity-75 transition-opacity'>Build a Box</Link>
     </div>
   )
 }

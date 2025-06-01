@@ -21,7 +21,7 @@ const Navbar = () => {
         <Link to='/contact' className='py-[16px] text-[18px] hover:opacity-80 duration-300 transition-opacity'>Contact</Link>
         <Link to='/account' className='py-[16px] text-[18px] hover:opacity-80 duration-300 transition-opacity'>Account</Link>
         <Link to='/craft' className='flex items-center justify-center hover:opacity-80 duration-300 transition-opacity'>
-          <button className='bg-primaryColor text-secondaryColor px-[30px] py-[16px] rounded-[50px] text-[18px] cursor-pointer'>Craft</button>
+          <button className='bg-primaryColor font-light text-secondaryColor px-[30px] py-[16px] rounded-[50px] text-[18px] cursor-pointer'>Craft</button>
         </Link>
       </div>
 
@@ -36,7 +36,7 @@ const Navbar = () => {
         <Link to='/contact' onClick={toggleMobileMenu}>Contact</Link>
         <Link to='/account' onClick={toggleMobileMenu}>Account</Link>
         <Link to='/craft' onClick={toggleMobileMenu}>
-          <button className='bg-primaryColor text-secondaryColor px-[30px] py-[16px] rounded-[50px] text-[18px] cursor-pointer'>Craft</button>
+          <button className='bg-primaryColor font-light text-secondaryColor px-[30px] py-[16px] rounded-[50px] text-[18px] cursor-pointer'>Craft</button>
         </Link>
       </div>
     </div>
