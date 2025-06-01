@@ -20,4 +20,5 @@ body, html {
     background-color: #ffefef;
     font-family: "Outfit", sans-serif;
     color: #a73a35;
+    overflow-x: hidden;
 }
