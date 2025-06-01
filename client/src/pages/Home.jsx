@@ -1,10 +1,12 @@
 import React from "react";
 import Hero from "../components/Hero";
+import BuildBox from "../components/BuildBox";
 
 const Home = () => {
   return (
-    <div className="flex items-center justify-center px-20 py-20">
+    <div className="py-20 ">
       <Hero />
+      <BuildBox />
     </div>
   );
 };
