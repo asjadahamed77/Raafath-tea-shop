@@ -1,8 +1,14 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import boxImage from "../assets/box/box.png";
 import cakeImage from "../assets/box/cake.png";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "../context/ToastContext";
+
 
 const Box = () => {
+    const navigate = useNavigate()
+    const {addToast} = useToast()
+
   const [chooseCake, setChooseCake] = useState(true);
   const [chooseBox, setChooseBox] = useState(false);
   const box = [
@@ -106,14 +112,39 @@ const Box = () => {
   const uniqueCategories = [...new Set(cakes.map((cake) => cake.category))];
 
   const handleNext = () => {
+    
+    if( selectedCakes.length === 0) {
+        addToast("Please select at least one cake to proceed.", "error", 3000);
+      
+      return;
+    }
+    addToast("Cake selected successfully!", "success", 3000);
     setChooseCake(false);
     setChooseBox(true);
+    window.scrollTo(0, 0);
   };
 
   const handleBack = () => {
-    setChooseCake(true);
+   navigate('/#buildBox')
     setChooseBox(false);
   };
+
+  const handleNextBox = () => {
+    if (boxSelected === null) {
+      addToast("Please select a box to proceed.", "error", 3000);
+      return;
+    }
+  
+    addToast("Box selected successfully!", "success", 3000);
+   
+  }
+
+  const handleBackBox = () => {
+    setChooseBox(false);
+    setChooseCake(true);
+    window.scrollTo(0, 0);
+  }
+
 
   const [filteredCategory, setFilteredCategory] = useState("all");
   const displayedCakes =
@@ -260,11 +291,11 @@ const Box = () => {
             ))}
           </div>
           <div className="flex flex-col items-center gap-6 mt-8">
-            <button className="bg-primaryColor rounded-full px-28 sm:px-32 py-4 text-secondaryColor text-sm sm:text-base hover:opacity-75 transition-opacity duration-300 cursor-pointer">
+            <button onClick={handleNextBox} className="bg-primaryColor rounded-full px-28 sm:px-32 py-4 text-secondaryColor text-sm sm:text-base hover:opacity-75 transition-opacity duration-300 cursor-pointer">
               Next
             </button>
             <a
-              href="/#buildBox"
+            onClick={handleBackBox}
               className="bg-transparent rounded-full px-28 sm:px-32 py-4 text-primaryColor border-[2px] text-sm sm:text-base hover:bg-primaryColor hover:text-secondaryColor transition-opacity duration-300 cursor-pointer"
             >
               Back
