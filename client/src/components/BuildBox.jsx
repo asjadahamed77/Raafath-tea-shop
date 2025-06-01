@@ -33,7 +33,7 @@ const BuildBox = () => {
         },
     ]
   return (
-    <div className='xl:px-[120px] lg:px-[40px] md:px-[20px] sm:px-[16px] px-4 text-center flex flex-col items-center'>
+    <div id='buildBox' className='xl:px-[120px] lg:px-[40px] md:px-[20px] sm:px-[16px] px-4 text-center flex flex-col items-center'>
         <h1 className='text-center font-[400] text-[45px] leading-12 sm:text-[60px] font-volgue my-12'>How to Build your Box</h1>
      <div className='grid xl:grid-cols-4 sm:grid-cols-2 mt-12 gap-20'>
      {
@@ -50,7 +50,7 @@ const BuildBox = () => {
         ))
       }
      </div>
-     <Link to={'/box'} className='mt-20 w-fit py-[16px] px-[50px] text-[18px] font-light bg-primaryColor text-secondaryColor rounded-full cursor-pointer duration-300 hover:opacity-75 transition-opacity'>Build a Box</Link>
+     <Link   onClick={() => window.scrollTo(0, 0)}  to={'/box'} className='mt-20 w-fit py-[16px] px-[50px] text-[18px] font-light bg-primaryColor text-secondaryColor rounded-full cursor-pointer duration-300 hover:opacity-75 transition-opacity'>Build a Box</Link>
     </div>
   )
 }

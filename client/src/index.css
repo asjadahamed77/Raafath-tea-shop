@@ -21,4 +21,5 @@ body, html {
     font-family: "Outfit", sans-serif;
     color: #a73a35;
     overflow-x: hidden;
+    scroll-behavior: smooth;
 }
