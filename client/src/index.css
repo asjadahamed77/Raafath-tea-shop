@@ -1,1 +1,23 @@
 @import "tailwindcss";
+
+
+@font-face {
+    font-family: 'Volgue';
+    src: url('/font/VolgueRegular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  
+
+@theme {
+    --color-primaryColor : #a73a35;
+
+    --color-secondaryColor : #ffefef;
+    --font-volgue : 'Volgue', sans-serif
+}
+
+body, html {
+    background-color: #ffefef;
+    font-family: "Outfit", sans-serif;
+    color: #a73a35;
+}

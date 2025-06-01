@@ -2,8 +2,8 @@ import React from 'react'
 
 const Navbar = () => {
   return (
-    <div>
-      Bujji
+    <div className=''>
+
     </div>
   )
 }
