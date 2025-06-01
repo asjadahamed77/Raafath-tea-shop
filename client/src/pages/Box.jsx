@@ -1,16 +1,17 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import boxImage from "../assets/box/box.png";
 import cakeImage from "../assets/box/cake.png";
+import cardImage from "../assets/box/card.png";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "../context/ToastContext";
 
-
 const Box = () => {
-    const navigate = useNavigate()
-    const {addToast} = useToast()
+  const navigate = useNavigate();
+  const { addToast } = useToast();
 
   const [chooseCake, setChooseCake] = useState(true);
   const [chooseBox, setChooseBox] = useState(false);
+  const [chooseCard, setChooseCard] = useState(false);
   const box = [
     {
       id: "001",
@@ -109,13 +110,51 @@ const Box = () => {
     },
   ];
 
+  const cards = [
+    {
+      id: "001",
+      cardName: "Card Name",
+      cardPrice: "LKR 500",
+      cardImage: cardImage,
+    },
+    {
+      id: "002",
+      cardName: "Card Name",
+      cardPrice: "LKR 500",
+      cardImage: cardImage,
+    },
+    {
+      id: "003",
+      cardName: "Card Name",
+      cardPrice: "LKR 500",
+      cardImage: cardImage,
+    },
+    {
+      id: "004",
+      cardName: "Card Name",
+      cardPrice: "LKR 500",
+      cardImage: cardImage,
+    },
+    {
+      id: "005",
+      cardName: "Card Name",
+      cardPrice: "LKR 500",
+      cardImage: cardImage,
+    },
+    {
+      id: "006",
+      cardName: "Card Name",
+      cardPrice: "LKR 500",
+      cardImage: cardImage,
+    },
+  ];
+
   const uniqueCategories = [...new Set(cakes.map((cake) => cake.category))];
 
   const handleNext = () => {
-    
-    if( selectedCakes.length === 0) {
-        addToast("Please select at least one cake to proceed.", "error", 3000);
-      
+    if (selectedCakes.length === 0) {
+      addToast("Please select at least one cake to proceed.", "error", 3000);
+
       return;
     }
     addToast("Cake selected successfully!", "success", 3000);
@@ -125,7 +164,7 @@ const Box = () => {
   };
 
   const handleBack = () => {
-   navigate('/#buildBox')
+    navigate("/#buildBox");
     setChooseBox(false);
   };
 
@@ -134,17 +173,18 @@ const Box = () => {
       addToast("Please select a box to proceed.", "error", 3000);
       return;
     }
-  
+    setChooseBox(false);
+    setChooseCard(true);
     addToast("Box selected successfully!", "success", 3000);
-   
-  }
+
+    window.scrollTo(0, 0);
+  };
 
   const handleBackBox = () => {
     setChooseBox(false);
     setChooseCake(true);
     window.scrollTo(0, 0);
-  }
-
+  };
 
   const [filteredCategory, setFilteredCategory] = useState("all");
   const displayedCakes =
@@ -154,6 +194,7 @@ const Box = () => {
 
   const [selectedCakes, setSelectedCakes] = useState([]);
   const [boxSelected, setBoxSelected] = useState(null);
+  const [cardSelected, setCardSelected] = useState(null);
 
   const toggleCakeSelection = (id) => {
     if (selectedCakes.includes(id)) {
@@ -165,6 +206,32 @@ const Box = () => {
   const handleBoxSelect = (index) => {
     setBoxSelected(index);
   };
+
+  const [to, setTo] = useState("");
+  const [from, setFrom] = useState("");
+  const [message, setMessage] = useState("");
+
+    const handleCardSelect = (index) => {
+        setCardSelected(index);
+    }
+
+  const handleNextCard = () => {
+    if (cardSelected === null) {
+      addToast("Please select a card to proceed.", "error", 3000);
+      return;
+    }
+    if (!to || !from) {
+      addToast("Please fill in all card details to proceed.", "error", 3000);
+      return;
+    }
+    addToast("Card selected successfully!", "success", 3000);
+    navigate("/");
+  }
+  const handleBackCard = () => {
+    setChooseCard(false);
+    setChooseBox(true);
+    window.scrollTo(0, 0);
+  }
 
   return (
     <div className="xl:px-[120px] lg:px-[40px] md:px-[20px] sm:px-[16px] px-4 py-20 flex flex-col  ">
@@ -196,7 +263,7 @@ const Box = () => {
               <button
                 key={index}
                 onClick={() => setFilteredCategory(item)}
-                className={`md:py-[16px] md:px-[35px] px-8 py-2 text-sm md:text-base rounded-full  ${
+                className={`md:py-[16px] md:px-[35px] px-8 py-2 text-sm md:text-base rounded-full capitalize ${
                   filteredCategory === item
                     ? "bg-primaryColor text-secondaryColor"
                     : "bg-transparent border-[2px]"
@@ -290,16 +357,102 @@ const Box = () => {
               </div>
             ))}
           </div>
-          <div className="flex flex-col items-center gap-6 mt-8">
-            <button onClick={handleNextBox} className="bg-primaryColor rounded-full px-28 sm:px-32 py-4 text-secondaryColor text-sm sm:text-base hover:opacity-75 transition-opacity duration-300 cursor-pointer">
-              Next
-            </button>
-            <a
-            onClick={handleBackBox}
-              className="bg-transparent rounded-full px-28 sm:px-32 py-4 text-primaryColor border-[2px] text-sm sm:text-base hover:bg-primaryColor hover:text-secondaryColor transition-opacity duration-300 cursor-pointer"
+          <div className="flex justify-between items-center ">
+            <button
+              onClick={handleBackBox}
+              className="text-sm md:text-base py-[15px] px-[40px] bg-transparent rounded-full border-[2px] font-light hover:opacity-75 duration-300 transition-opacity cursor-pointer"
             >
               Back
-            </a>
+            </button>
+            <button
+              onClick={handleNextBox}
+              className="text-sm md:text-base py-[15px] px-[40px] bg-primaryColor text-secondaryColor rounded-full border-[2px] font-light hover:opacity-75 duration-300 transition-opacity cursor-pointer"
+            >
+              Next
+            </button>
+          </div>
+        </>
+      )}
+      {chooseCard && (
+        <>
+          <div className="flex flex-col items-center">
+            <h1 className="text-center font-[400] text-[45px] leading-12 sm:text-[60px] font-volgue my-12">
+              Write a Card
+            </h1>
+            <p className="w-[80%] text-center font-light leading-6 mt-[-30px] text-[18px]">
+              Add a heartfelt message, funny note, or even an inside joke. This
+              is your moment to express what words a cake alone can’t — and
+              we’ll make sure it’s written just right.
+            </p>
+          </div>
+          <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-12 my-20 place-items-center w-fit">
+            {cards.map((item, index) => (
+              <div
+                key={item.id}
+                onClick={() => handleCardSelect(index)}
+                className={`lg:w-[370px] h-[435px] flex flex-col items-center py-[50px] px-[75px] rounded-[30px] shadow-[4px_4px_14px_0]/30 hover:shadow-[4px_4px_14px_0]/70 cursor-pointer  ${
+                  cardSelected === index
+                    ? "border-[1px] border-primaryColor"
+                    : ""
+                }`}
+              >
+                <div className=" w-[180px] h-[262px]">
+                  <img
+                    src={item.cardImage}
+                    alt={item.cardName}
+                    className="w-full h-full  aspect-square"
+                  />
+                </div>
+                <p className="text-[18px] font-light mt-8">{item.cardName}</p>
+                <p className="text-[18px] font-light">{item.cardPrice}</p>
+              </div>
+            ))}
+          </div>
+          <div className="flex   justify-center mt-24 ">
+            <div className="lg:w-[600px] md:w-[500px] sm:w-[430px] w-[350px] flex flex-col gap-8">
+              <div className="w-full">
+                <p className="text-[18px] font-light">To *</p>
+                <input
+                  type="text"
+                  className="focus:outline-none border-b-[2px] w-full"
+                  value={to}
+                  onChange={(e) => setTo(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="w-full">
+                <p className="text-[18px] font-light">From *</p>
+                <input
+                  type="text"
+                  className="focus:outline-none border-b-[2px] w-full"
+                  value={from}
+                  onChange={(e) => setFrom(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="w-full">
+              <p className="text-[18px] font-light">Message</p>
+              <textarea className="focus:outline-none border-b-[2px] w-full h-[100px] resize-none"
+               
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+             />
+              </div>
+              <div className="mt-16 flex justify-between items-center">
+              <button
+            onClick={handleBackCard}
+              className="text-sm md:text-base py-[15px] px-[40px] bg-transparent rounded-full border-[2px] font-light hover:opacity-75 duration-300 transition-opacity cursor-pointer"
+            >
+              Back
+            </button>
+            <button
+            onClick={handleNextCard}
+              className="text-sm md:text-base py-[15px] px-[40px] bg-primaryColor text-secondaryColor rounded-full border-[2px] font-light hover:opacity-75 duration-300 transition-opacity cursor-pointer"
+            >
+              Next
+            </button>
+              </div>
+            </div>
           </div>
         </>
       )}
