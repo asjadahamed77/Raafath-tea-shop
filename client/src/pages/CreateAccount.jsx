@@ -3,9 +3,10 @@ import googleIcon from "../assets/icons/google.png";
 import { IoIosEye, IoIosEyeOff } from "react-icons/io";
 import { Link } from "react-router-dom";
 
-const Login = () => {
+const CreateAccount = () => {
   const [showPassword, setShowPassword] = useState(false);
-
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -13,7 +14,7 @@ const Login = () => {
     <div className="xl:px-[120px] lg:px-[40px] md:px-[20px] sm:px-[16px] px-4 py-20">
       <div className="lg:w-[618px] md:w-[550px] sm:w-[500px] w-full mx-auto sm:my-20 my-12">
         <h1 className="font-volgue font-light sm:text-[60px] text-[45px] text-center">
-          Account
+          Create Account
         </h1>
 
         {/* Google Sign In */}
@@ -33,8 +34,22 @@ const Login = () => {
         <form className="w-full mt-12">
           <input
             type="text"
-            placeholder="Email"
+            placeholder="First Name"
             className="bg-transparent focus:outline-none border-b w-full p-2"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+          />
+          <input
+            type="text"
+            placeholder="Last Name"
+            className="bg-transparent focus:outline-none border-b w-full p-2 mt-12"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+          />
+          <input
+            type="text"
+            placeholder="Email"
+            className="bg-transparent focus:outline-none border-b w-full p-2 mt-12"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
@@ -60,19 +75,18 @@ const Login = () => {
             </div>
           </div>
 
-          <button className="w-full rounded-full text-secondaryColor bg-primaryColor hover:opacity-65 duration-300 transition-opacity mt-16 text-[18px] font-light sm:h-[80px] h-[55px]">
-            Sign in
+          <button
+            type="submit"
+            className="w-full rounded-full text-secondaryColor bg-primaryColor hover:opacity-65 duration-300 transition-opacity mt-16 text-[18px] font-light sm:h-[80px] h-[55px]"
+          >
+            Create Account
           </button>
         </form>
 
-        <p className="mt-12 text-[18px] underline text-center font-extralight cursor-pointer hover:opacity-65 duration-300 transition-opacity">
-          Forgot Password?
-        </p>
-
         <p className="mt-8 text-[18px] text-center font-extralight">
-          Don’t have an account? Sign up{" "}
+          Create an account? Sign in{" "}
           <Link
-            to={"/create-account"}
+            to={"/login"}
             className="underline font-normal cursor-pointer hover:opacity-65 duration-300 transition-opacity"
           >
             here
@@ -83,4 +97,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default CreateAccount;
