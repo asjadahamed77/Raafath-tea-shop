@@ -48,7 +48,7 @@ const Toast = ({ message, type, onClose }) => {
 
   return (
     <div
-      className={`${textColor} bg-white shadow-[4px_2px_2px_0]/30 px-4 py-2 rounded-md  flex flex-col `}
+      className={` bg-white shadow-[4px_2px_2px_0]/30 px-4 py-2 rounded-md  flex flex-col `}
     >
       <div className="flex items-center justify-between w-full border-b-2   mb-2 min-w-[250px]">
         <h1 className="font-volgue font-[600] ">Raafest</h1>
@@ -62,15 +62,15 @@ const Toast = ({ message, type, onClose }) => {
       <div>
         <div className="flex items-center justify-start">
           {type === "success" && (
-            <MdDone className="text-4xl mr-2 p-2 bg-green-500/15 rounded-md box-border " />
+            <MdDone className="text-4xl mr-2 p-2 bg-green-500/15 rounded-md box-border text-green-500 " />
           )}
           {type === "error" && (
-            <MdErrorOutline className="text-4xl mr-2 p-2 bg-red-500/15 rounded-md box-border " />
+            <MdErrorOutline className="text-4xl mr-2 p-2 bg-red-500/15 rounded-md box-border text-red-500 " />
           )}
           {type === "info" && (
-            <BsInfoLg className="text-4xl mr-2 p-2 bg-blue-500/15 rounded-md box-border " />
+            <BsInfoLg className="text-4xl mr-2 p-2 bg-blue-500/15 rounded-md box-border text-blue-500 " />
           )}
-          <span className="font-medium tracking-wide">{message}</span>
+          <span className={`font-medium tracking-wide ${textColor}`}>{message}</span>
         </div>
       </div>
     </div>

@@ -19,7 +19,7 @@ const Navbar = () => {
       <div className='hidden lg:flex items-center gap-[60px]'>
         <Link to='/about' className='py-[16px] text-[18px] hover:opacity-80 duration-300 transition-opacity'>About</Link>
         <Link to='/contact' className='py-[16px] text-[18px] hover:opacity-80 duration-300 transition-opacity'>Contact</Link>
-        <Link to='/account' className='py-[16px] text-[18px] hover:opacity-80 duration-300 transition-opacity'>Account</Link>
+        <Link to='/login' className='py-[16px] text-[18px] hover:opacity-80 duration-300 transition-opacity'>Account</Link>
         <Link to='/craft' className='flex items-center justify-center hover:opacity-80 duration-300 transition-opacity'>
           <button className='bg-primaryColor font-light text-secondaryColor px-[30px] py-[16px] rounded-[50px] text-[18px] cursor-pointer'>Craft</button>
         </Link>
@@ -34,7 +34,7 @@ const Navbar = () => {
       <div className={`fixed bottom-0 left-0 w-full h-screen bg-secondaryColor flex flex-col items-center justify-center gap-10 text-[20px] z-20 transition-transform duration-500 ease-in-out ${mobileMenuOpen ? 'translate-y-0' : 'translate-y-full'}`}>
         <Link to='/about' onClick={toggleMobileMenu}>About</Link>
         <Link to='/contact' onClick={toggleMobileMenu}>Contact</Link>
-        <Link to='/account' onClick={toggleMobileMenu}>Account</Link>
+        <Link to='/login' onClick={toggleMobileMenu}>Account</Link>
         <Link to='/craft' onClick={toggleMobileMenu}>
           <button className='bg-primaryColor font-light text-secondaryColor px-[30px] py-[16px] rounded-[50px] text-[18px] cursor-pointer'>Craft</button>
         </Link>

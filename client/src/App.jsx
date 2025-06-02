@@ -5,6 +5,8 @@ import About from "./pages/About"
 import Contact from "./pages/Contact"
 import Account from "./pages/Account"
 import Box from "./pages/Box"
+import Login from "./pages/Login"
+import CreateAccount from "./pages/CreateAccount"
 
 function App() {
   
@@ -18,6 +20,8 @@ function App() {
       <Route path="contact" element ={ <Contact />} />
       <Route path="account" element ={ <Account />} />
       <Route path="box" element ={ <Box />} />
+      <Route path="login" element ={ <Login />} />
+      <Route path="create-account" element ={ <CreateAccount />} />
 
       </Route>
     </Routes>
