@@ -199,8 +199,10 @@ const Box = () => {
   const toggleCakeSelection = (id) => {
     if (selectedCakes.includes(id)) {
       setSelectedCakes(selectedCakes.filter((cakeId) => cakeId !== id));
+      addToast("Cake Removed", "success", 3000)
     } else {
       setSelectedCakes([...selectedCakes, id]);
+      addToast("Cake Added", "success", 3000)
     }
   };
   const handleBoxSelect = (index) => {
@@ -334,7 +336,7 @@ const Box = () => {
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-12 my-20 place-items-center w-fit">
+          <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-12 my-20 place-items-center ">
             {box.map((item, index) => (
               <div
                 key={item.id}
@@ -385,7 +387,7 @@ const Box = () => {
               we’ll make sure it’s written just right.
             </p>
           </div>
-          <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-12 my-20 place-items-center w-fit">
+          <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-12 my-20 place-items-center ">
             {cards.map((item, index) => (
               <div
                 key={item.id}
