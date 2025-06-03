@@ -4,8 +4,8 @@ import userModel from "../models/userModel.js";
 import validator from "validator";
 
 export const registerUser = async (req, res) => {
-  const { firstName, lastName, email, password } = req.body;
-  if (!firstName || !lastName || !email || !password) {
+  const { name, email, password } = req.body;
+  if (!name || !email || !password) {
     return res.status(400).json({ message: "All fields are required" });
   }
   // Validate email format
@@ -31,8 +31,7 @@ export const registerUser = async (req, res) => {
 
     // Create new user
     const user = new userModel({
-      firstName,
-      lastName,
+      name,
       email,
       password: hashedPassword,
     });
@@ -118,7 +117,6 @@ export const userLogout = async (req,res)=> {
 export const isAuthenticated = async (req, res) => {
     try {
       const { id } = req.params;
-      console.log(id);
       
       const user = await userModel.findById(id);
       if (!user) return res.json({ success: false, message: "User not found" });

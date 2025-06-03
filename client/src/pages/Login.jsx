@@ -34,18 +34,9 @@ const Login = () => {
           Account
         </h1>
 
-        {/* Google Sign In */}
-        <div className="flex items-center justify-center gap-6 border-[1px] rounded-[10px] w-full sm:h-[80px] h-[55px] mt-12 hover:opacity-65 duration-300 transition-opacity cursor-pointer">
-          <img src={googleIcon} alt="Google" className="w-[40px] h-[40px]" />
-          <p className="text-[18px] font-light">Sign in with Google</p>
-        </div>
+      
 
-        {/* Divider */}
-        <div className="flex items-center justify-center gap-4 mt-8">
-          <p className="flex-1 h-[1px] bg-primaryColor"></p>
-          <p>or</p>
-          <p className="flex-1 h-[1px] bg-primaryColor"></p>
-        </div>
+     
 
         {/* Login Form */}
         <form onSubmit={submitHandler} className="w-full mt-12">
