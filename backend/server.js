@@ -3,6 +3,7 @@ import cors from 'cors'
 import 'dotenv/config'
 import cookieParser from 'cookie-parser'
 import connectDB from './config/mongodb.js'
+import authRouter from './routes/authUser.js'
 
 
 
@@ -26,6 +27,7 @@ app.use(cors({origin: allowedOrigins, credentials: true}))
 
 
 // API ENDPOINTS
+app.use('/api/auth', authRouter)
 
 
 app.get('/',(req,res)=>{
