@@ -114,3 +114,18 @@ export const userLogout = async (req,res)=> {
         return res.status(500).json({ message: "Internal server error" });
     }
 }
+
+export const isAuthenticated = async (req, res) => {
+    try {
+      const { id } = req.params;
+      console.log(id);
+      
+      const user = await userModel.findById(id);
+      if (!user) return res.json({ success: false, message: "User not found" });
+  
+      return res.json({ success: true });
+    } catch (error) {
+      console.log(error);
+      res.json({ success: false, message: "Authentication check failed" });
+    }
+  };
