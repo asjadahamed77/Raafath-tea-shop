@@ -31,7 +31,7 @@ export const register = createAsyncThunk(
           }
         );
   
-        // ✅ Consider registration successful if user and token are present
+       
         if (data.user && data.token) {
           localStorage.setItem("userInfo", JSON.stringify(data.user));
           localStorage.setItem("userToken", data.token);
@@ -54,7 +54,7 @@ export const login = createAsyncThunk(
   async ({email,password}, { rejectWithValue }) => {
     try {
       const { data } = await axios.post(
-        `${backendUrl}/api/auth/login`,
+        `${backendUrl}/auth/login`,
         {email,password},
         {
           withCredentials: true,
@@ -64,7 +64,6 @@ export const login = createAsyncThunk(
       if (data.success) {
         localStorage.setItem("userInfo", JSON.stringify(data.user));
         localStorage.setItem("userToken", data.token);
-
         return data;
       } else {
         return rejectWithValue(data.message);
@@ -81,7 +80,7 @@ export const logout = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       await axios.post(
-        `${backendUrl}/api/auth/logout`,
+        `${backendUrl}/auth/logout`,
         {},
         { withCredentials: true }
       );
