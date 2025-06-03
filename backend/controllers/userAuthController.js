@@ -55,7 +55,7 @@ export const registerUser = async (req, res) => {
     // Send response with token
     res
       .status(201)
-      .json({ message: "User registered successfully", token, user });
+      .json({ success: true, message: "User registered successfully", token, user });
   } catch (error) {
     console.error("Error during user registration:", error);
     return res.status(500).json({ message: "Internal server error" });

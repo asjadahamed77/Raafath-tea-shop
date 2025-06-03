@@ -1,13 +1,31 @@
 import React, { useState } from "react";
 import googleIcon from "../assets/icons/google.png";
 import { IoIosEye, IoIosEyeOff } from "react-icons/io";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { login } from "../redux/slices/authSlice";
+import { useToast } from "../context/ToastContext";
 
 const Login = () => {
+  const dispatch = useDispatch()
+  const {loading, error} = useSelector(state => state.auth)
+  const navigate = useNavigate()
+  const { addToast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const submitHandler = async (e) => {
+    e.preventDefault();
+    const result = await dispatch(login({ email, password }));
+  
+    if (login.fulfilled.match(result)) {
+      addToast("Login successfully", "success", 3000);
+      navigate("/");
+    } else {
+      addToast(result.payload || "Registration failed", "error", 3000);
+    }
+  };
 
   return (
     <div className="xl:px-[120px] lg:px-[40px] md:px-[20px] sm:px-[16px] px-4 py-20">
@@ -30,7 +48,7 @@ const Login = () => {
         </div>
 
         {/* Login Form */}
-        <form className="w-full mt-12">
+        <form onSubmit={submitHandler} className="w-full mt-12">
           <input
             type="text"
             placeholder="Email"

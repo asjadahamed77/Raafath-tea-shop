@@ -4,6 +4,7 @@ import 'dotenv/config'
 import cookieParser from 'cookie-parser'
 import connectDB from './config/mongodb.js'
 import authRouter from './routes/authUser.js'
+import adminAuthRouter from './routes/authAdmin.js'
 
 
 
@@ -28,6 +29,7 @@ app.use(cors({origin: allowedOrigins, credentials: true}))
 
 // API ENDPOINTS
 app.use('/api/auth', authRouter)
+app.use('/api/auth/admin', adminAuthRouter)
 
 
 app.get('/',(req,res)=>{
