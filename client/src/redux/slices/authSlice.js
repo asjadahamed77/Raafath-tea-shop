@@ -17,42 +17,45 @@ const initialState = {
 const token = localStorage.getItem("userToken");
 
 // REGISTER
+// REGISTER
 export const register = createAsyncThunk(
-  "auth/register",
-  async (formData, { rejectWithValue }) => {
-    try {
-      const { data } = await axios.post(
-        `${backendUrl}/auth/register`,
-        formData,
-        {
-          withCredentials: true,
-          headers: { "Content-Type": "application/json" },
+    "auth/register",
+    async ({ firstName, lastName, email, password }, { rejectWithValue }) => {
+      try {
+        const { data } = await axios.post(
+          `${backendUrl}/auth/register`,
+          { firstName, lastName, email, password },
+          {
+            withCredentials: true,
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+  
+        // ✅ Consider registration successful if user and token are present
+        if (data.user && data.token) {
+          localStorage.setItem("userInfo", JSON.stringify(data.user));
+          localStorage.setItem("userToken", data.token);
+          return data; // Will go to `fulfilled`
+        } else {
+          return rejectWithValue(data.message || "Registration failed");
         }
-      );
-      if (data.success) {
-        localStorage.setItem("userInfo", JSON.stringify(data.user));
-        localStorage.setItem("userToken", data.token);
-
-        return data;
-      } else {
-        return rejectWithValue(data.message);
+      } catch (error) {
+        return rejectWithValue(
+          error.response?.data?.message || "Registration failed"
+        );
       }
-    } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || "Registration failed"
-      );
     }
-  }
-);
+  );
+  
 
 // LOGIN
 export const login = createAsyncThunk(
   "auth/login",
-  async (formData, { rejectWithValue }) => {
+  async ({email,password}, { rejectWithValue }) => {
     try {
       const { data } = await axios.post(
         `${backendUrl}/api/auth/login`,
-        formData,
+        {email,password},
         {
           withCredentials: true,
           headers: { "Content-Type": "application/json" },
@@ -116,7 +119,6 @@ const authSlice = createSlice({
       })
       .addCase(register.fulfilled, (state, action) => {
         state.loading = false;
-
         state.user = action.payload.user;
       })
       .addCase(register.rejected, (state, action) => {
