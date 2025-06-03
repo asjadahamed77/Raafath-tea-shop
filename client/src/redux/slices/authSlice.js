@@ -103,7 +103,7 @@ const authSlice = createSlice({
   reducers: {
     clearAuthState: (state) => {
       state.error = null;
-      state.successMessage = null;
+    
     },
     resetUserData: (state) => {
       state.userData = null;
@@ -144,7 +144,7 @@ const authSlice = createSlice({
         state.user = null;
         state.loading = false;
         state.error = null;
-        state.successMessage = null;
+
       })
       .addCase(logout.rejected, (state, action) => {
         state.error = action.payload;
