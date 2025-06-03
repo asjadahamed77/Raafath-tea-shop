@@ -12,14 +12,14 @@ const CreateAccount = () => {
   const { loading, error } = useSelector(state => state.auth)
   const navigate = useNavigate() 
   const [showPassword, setShowPassword] = useState(false);
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [name, setName] = useState("");
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    const result = await dispatch(register({ firstName, lastName, email, password }));
+    const result = await dispatch(register({ name, email, password }));
   
     if (register.fulfilled.match(result)) {
       addToast("Account created successfully", "success", 3000);
@@ -38,35 +38,18 @@ const CreateAccount = () => {
           Create Account
         </h1>
 
-        {/* Google Sign In */}
-        <div className="flex items-center justify-center gap-6 border-[1px] rounded-[10px] w-full sm:h-[80px] h-[55px] mt-12 hover:opacity-65 duration-300 transition-opacity cursor-pointer">
-          <img src={googleIcon} alt="Google" className="w-[40px] h-[40px]" />
-          <p className="text-[18px] font-light">Sign in with Google</p>
-        </div>
 
-        {/* Divider */}
-        <div className="flex items-center justify-center gap-4 mt-8">
-          <p className="flex-1 h-[1px] bg-primaryColor"></p>
-          <p>or</p>
-          <p className="flex-1 h-[1px] bg-primaryColor"></p>
-        </div>
-
+       
         {/* Login Form */}
         <form onSubmit={submitHandler} className="w-full mt-12">
           <input
             type="text"
-            placeholder="First Name"
+            placeholder="Name"
             className="bg-transparent focus:outline-none border-b w-full p-2"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
           />
-          <input
-            type="text"
-            placeholder="Last Name"
-            className="bg-transparent focus:outline-none border-b w-full p-2 mt-12"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-          />
+        
           <input
             type="text"
             placeholder="Email"
