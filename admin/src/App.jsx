@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom"
+import { Navigate, Route, Routes } from "react-router-dom"
 import Login from "./pages/Login"
 import DashBoardLayout from "./layout/DashBoardLayout"
 import CakeItems from "./pages/CakeItems"
