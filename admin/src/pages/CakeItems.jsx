@@ -183,7 +183,7 @@ const CakeItems = () => {
           onClick={() => setShowPopup(true)}
           className="text-sm sm:text-[18px] bg-primaryColor text-secondaryColor py-[15px] px-[20px] font-light rounded-[8px] hover:opacity-75 duration-300 transition-opacity cursor-pointer"
         >
-          + Add new
+         + Add new
         </button>
       </div>
 
