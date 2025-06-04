@@ -1,14 +1,31 @@
 import React, { useState } from "react";
 
 import { IoIosEye, IoIosEyeOff } from "react-icons/io";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { login } from "../redux/slices/authSlice";
+import { useToast } from "../context/ToastContext";
+
 
 const Login = () => {
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate()
+  const { addToast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const submitHandler = async (e) => {
     e.preventDefault();
+    const result = await dispatch(login({ email, password }));
+  
+    if (login.fulfilled.match(result)) {
+      addToast("Login successfully", "success", 3000);
+      navigate("/");
+    } else {
+      addToast(result.payload || "Registration failed", "error", 3000);
+    }
   };
 
   return (

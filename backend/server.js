@@ -18,7 +18,7 @@ connectDB()
 
 
 
-const allowedOrigins = ['http://localhost:5173','https://raafest.vercel.app']
+const allowedOrigins = ['http://localhost:5173','http://localhost:5174','https://raafest.vercel.app','https://admin-raafestt.vercel.app']
 
 
 app.use(express.json())

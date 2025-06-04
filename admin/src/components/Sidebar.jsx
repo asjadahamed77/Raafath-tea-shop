@@ -5,11 +5,27 @@ import activeCakeItems from '../assets/icons/active-cake-items.png'
 import activeBoxItems from '../assets/icons/active-box-items.png'
 import activeCardTypes from '../assets/icons/active-card-types.png'
 import boxItems from '../assets/icons/box-items.png'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useLocation } from 'react-router-dom';
+import { TbLogout2 } from "react-icons/tb";
+import { useDispatch } from 'react-redux'
+import { clearAuthState, logout } from '../redux/slices/authSlice'
+import { useToast } from '../context/ToastContext'
 
 const Sidebar = () => {
     const location = useLocation();
+    const dispatch = useDispatch()
+    const {addToast} = useToast()
+    const navigate = useNavigate()
+
+    const logoutHandler = ()=> {
+      dispatch(logout())
+      dispatch(clearAuthState())
+      navigate('/login')
+      addToast("Logout Admin Successfully", "success", 3000)
+      
+    }
+
   return (
     <div className='w-[250px] m-[15px]'>
       {/* Title */}
@@ -38,6 +54,12 @@ const Sidebar = () => {
         <img src={boxItems} alt="Cake Items" className='w-[20px] h-[20px]' />
         <p className='text-[18px] font-light '>Payment Processes</p>
         </Link>
+        <p onClick={logoutHandler} className={`flex items-center gap-[15px] rounded-[8px] p-[15px] cursor-pointer hover:opacity-55 duration-150 transition-opacity border border-primaryColor/10 `}>
+          <p>
+            <TbLogout2 className='text-[20px]' />
+          </p>
+          <p>Logout</p>
+        </p>
       </div>
     </div>
   )
