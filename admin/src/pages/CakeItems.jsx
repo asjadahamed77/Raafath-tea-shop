@@ -1,0 +1,132 @@
+import React, { useState, useMemo } from 'react';
+import searchIcon from '../assets/icons/search-icon.png';
+import cakeImage from '../assets/box/cake.png';
+
+const allCakes = [
+  // same static cakes list as before...
+  { id: "001", cakeName: "Chocolate Cake", cakePrice: "2000", cakeImage, category: "cup cake" },
+  { id: "002", cakeName: "Vanilla Delight", cakePrice: "2000", cakeImage, category: "bento cake" },
+  { id: "003", cakeName: "Strawberry Layer", cakePrice: "2000", cakeImage, category: "layer cake" },
+  { id: "004", cakeName: "Fruit Jar", cakePrice: "2000", cakeImage, category: "jar cake" },
+  { id: "005", cakeName: "Mini Cupcake", cakePrice: "2000", cakeImage, category: "cup cake" },
+  { id: "006", cakeName: "Nutty Jar", cakePrice: "2000", cakeImage, category: "jar cake" },
+  { id: "007", cakeName: "Butter Layer", cakePrice: "2000", cakeImage, category: "layer cake" },
+  { id: "008", cakeName: "Bento Strawberry", cakePrice: "2000", cakeImage, category: "bento cake" },
+  { id: "009", cakeName: "Deluxe Layer", cakePrice: "2000", cakeImage, category: "layer cake" },
+  { id: "010", cakeName: "Classic Jar", cakePrice: "2000", cakeImage, category: "jar cake" },
+  { id: "011", cakeName: "Rainbow Cup", cakePrice: "2000", cakeImage, category: "cup cake" },
+  { id: "012", cakeName: "Mango Jar", cakePrice: "2000", cakeImage, category: "jar cake" },
+  { id: "013", cakeName: "Triple Layer", cakePrice: "2000", cakeImage, category: "layer cake" },
+  { id: "014", cakeName: "Bento Love", cakePrice: "2000", cakeImage, category: "bento cake" },
+];
+
+const CakeItems = () => {
+  const [search, setSearch] = useState("");
+  const [itemsPerPage, setItemsPerPage] = useState(4);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  // Filtered by search
+  const filteredCakes = useMemo(() => {
+    return allCakes.filter((cake) =>
+      cake.cakeName.toLowerCase().includes(search.toLowerCase())
+    );
+  }, [search]);
+
+  const totalPages = Math.ceil(filteredCakes.length / itemsPerPage);
+
+  const currentItems = useMemo(() => {
+    const start = (currentPage - 1) * itemsPerPage;
+    return filteredCakes.slice(start, start + itemsPerPage);
+  }, [filteredCakes, currentPage, itemsPerPage]);
+
+  const handlePageChange = (dir) => {
+    if (dir === "prev" && currentPage > 1) {
+      setCurrentPage((prev) => prev - 1);
+    } else if (dir === "next" && currentPage < totalPages) {
+      setCurrentPage((prev) => prev + 1);
+    }
+  };
+
+  return (
+    <div>
+      <h1 className='text-[26px] font-[500]'>Cake Items</h1>
+
+      {/* Search and Add Item */}
+      <div className='flex items-center justify-between mt-[20px]'>
+        {/* Search */}
+        <div className='flex items-center gap-[15px] sm:py-[15px] py-[12px] px-[20px] sm:w-[350px] w-[250px] border-[1px] border-primaryColor/50 rounded-[6px]'>
+          <img src={searchIcon} alt="search" className='sm:w-[20px] sm:h-[20px] w-[16px]' />
+          <input
+            type="text"
+            className='w-full focus:outline-0 placeholder:text-primaryColor'
+            placeholder='Search by name'
+            value={search}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setCurrentPage(1);
+            }}
+          />
+        </div>
+
+        <button className='text-sm sm:text-[18px] bg-primaryColor text-secondaryColor py-[15px] px-[20px] font-light rounded-[8px] hover:opacity-75 duration-300 transition-opacity cursor-pointer'>
+          + Add new
+        </button>
+      </div>
+
+      {/* Cake List */}
+      <div className='grid xl:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-[30px] mt-12'>
+        {currentItems.map((item) => (
+          <div key={item.id} className='text-center flex flex-col items-center border-[1px] border-primaryColor/50 rounded-[15px] py-[20px] px-[65px]'>
+            <img src={item.cakeImage} alt={item.cakeName} className='w-[148px] h-[180px]' />
+            <p className='text-[20px] font-[500] mt-4'>{item.cakeName}</p>
+            <p className='text-[20px] font-[500]'>Rs. {item.cakePrice}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Pagination */}
+      <div className='flex items-center justify-between mt-[30px] flex-wrap gap-4'>
+        {/* Items per page */}
+        <div className='flex items-center gap-[20px]'>
+          <p className='text-[18px] font-light'>Items per page</p>
+          <select
+            className='rounded-[6px] py-[8px] px-[15px] border border-primaryColor/50 focus:outline-0'
+            value={itemsPerPage}
+            onChange={(e) => {
+              setItemsPerPage(Number(e.target.value));
+              setCurrentPage(1); // Reset to first page
+            }}
+          >
+            <option value="4">4</option>
+            <option value="8">8</option>
+            <option value="12">12</option>
+            <option value="16">16</option>
+          </select>
+        </div>
+
+        {/* Page navigation */}
+        <div className='flex items-center gap-[15px]'>
+          <button
+            onClick={() => handlePageChange("prev")}
+            disabled={currentPage === 1}
+            className='rounded-[4px] border border-primaryColor/50 py-[8px] px-[14px] aspect-square cursor-pointer hover:opacity-75 duration-300 disabled:opacity-40'
+          >
+            {"<"}
+          </button>
+          <p className='text-[18px] font-light'>
+            Page {currentPage} of {totalPages || 1}
+          </p>
+          <button
+            onClick={() => handlePageChange("next")}
+            disabled={currentPage === totalPages}
+            className='rounded-[4px] border border-primaryColor/50 py-[8px] px-[14px] aspect-square cursor-pointer hover:opacity-75 duration-300 disabled:opacity-40'
+          >
+            {">"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default CakeItems;
