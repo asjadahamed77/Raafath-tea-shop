@@ -206,6 +206,7 @@ const BoxItems = () => {
                   placeholder="Enter the cake name"
                   value={boxName}
                   onChange={(e) => setBoxName(e.target.value)}
+                  required
                   className="py-[15px] px-[20px] w-full rounded-[6px] border border-primaryColor/50 focus:outline-none focus:ring-2 focus:ring-primaryColor focus:ring-offset-1 transition duration-150 ease-in-out"
                 />
               </div>
@@ -216,6 +217,7 @@ const BoxItems = () => {
                   placeholder="Enter the cake price"
                   value={boxPrice}
                   onChange={(e) => setBoxPrice(e.target.value)}
+                  required
                   className="py-[15px] px-[20px] w-full rounded-[6px] border border-primaryColor/50 focus:outline-none focus:ring-2 focus:ring-primaryColor focus:ring-offset-1 transition duration-150 ease-in-out"
                 />
               </div>
@@ -265,6 +267,7 @@ const BoxItems = () => {
                   accept="image/*"
                   onChange={handleImageUpload}
                   className="hidden"
+                  required
                 />
               </div>
 
