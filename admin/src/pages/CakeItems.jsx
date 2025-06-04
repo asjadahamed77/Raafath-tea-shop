@@ -206,7 +206,7 @@ const CakeItems = () => {
       </div>
 
       {/* Pagination */}
-      <div className="flex items-center justify-between mt-[30px] flex-wrap gap-4">
+      <div className="flex flex-col md:flex-row items-center justify-between mt-[30px] flex-wrap gap-4">
         {/* Items per page */}
         <div className="flex items-center gap-[20px]">
           <p className="text-[18px] font-light">Items per page</p>
@@ -226,7 +226,7 @@ const CakeItems = () => {
         </div>
 
         {/* Page navigation */}
-        <div className="flex items-center gap-[15px]">
+        <div className="flex  items-center gap-[15px]">
           <button
             onClick={() => handlePageChange("prev")}
             disabled={currentPage === 1}
