@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import googleIcon from "../assets/icons/google.png";
+
 import { IoIosEye, IoIosEyeOff } from "react-icons/io";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
