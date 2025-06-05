@@ -5,6 +5,7 @@ import { backendUrl } from "../../services/api";
 
 const initialState = {
   admin: null,
+  cakes: [],
   loading: false,
   error: null,
 };
@@ -36,6 +37,76 @@ export const login = createAsyncThunk(
   }
 );
 
+export const addCakes = createAsyncThunk(
+  "auth/addCakes",
+  async (formData, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.post(
+        `${backendUrl}/auth/admin/add-cake`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${admintoken}`,
+          },
+        }
+      );
+      return data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to add cakes"
+      );
+    }
+  }
+);
+
+export const allCakes = createAsyncThunk(
+  "auth/allCakes",
+  async (_, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.get(`${backendUrl}/auth/admin/cakes`, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${admintoken}`,
+        },
+      });
+      if (data.success) {
+        return data;
+      }
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to fetch cakes"
+      );
+    }
+  }
+);
+
+export const deleteCake = createAsyncThunk(
+  "auth/deleteCake",
+  async (cakeId, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.delete(
+        `${backendUrl}/auth/admin/delete-cake/${cakeId}`,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${admintoken}`,
+          },
+        }
+      );
+      if (data.success) {
+        return { id: cakeId };
+      } else {
+        return rejectWithValue(data.message);
+      }
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to delete cake"
+      );
+    }
+  }
+);
+
 // SLICE
 const authSlice = createSlice({
   name: "auth",
@@ -48,7 +119,7 @@ const authSlice = createSlice({
       state.admin = null;
       state.loading = false;
       state.error = null;
-    
+
       localStorage.removeItem("adminToken");
     },
   },
@@ -67,10 +138,50 @@ const authSlice = createSlice({
       .addCase(login.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-      });
+      })
+
+      // Add Cakes
+      .addCase(addCakes.pending, (state) => {
+        state.loading = true;
+        state.error = false;
+      })
+      .addCase(addCakes.fulfilled, (state, action) => {
+        state.loading = false;
+        state.cakes.push(action.payload.cake);
+      })
+      .addCase(addCakes.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(allCakes.pending, (state) => {
+        state.loading = true;
+        state.error = false;
+      })
+      .addCase(allCakes.fulfilled, (state, action) => {
+        state.loading = false;
+        state.cakes = action.payload.cakes;
+      })
+      .addCase(allCakes.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(deleteCake.pending, (state)=>{
+        state.loading = true;
+        state.error = false;
+      })
+      .addCase(deleteCake.fulfilled, (state,action)=>{
+        state.loading = false;
+        state.cakes = state.cakes.filter(
+          (cake) => cake._id !== action.payload.id
+        )
+      })
+      .addCase(deleteCake.rejected, (state,action)=>{
+        state.loading = false;
+        state.error = action.payload;
+      })
   },
 });
 
-export const { clearAuthState,logout } = authSlice.actions;
+export const { clearAuthState, logout } = authSlice.actions;
 
 export default authSlice.reducer;
