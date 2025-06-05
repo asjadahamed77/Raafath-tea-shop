@@ -92,7 +92,7 @@ const CakeItems = () => {
   useEffect(()=>{
     dispatch(allCakes())
     
-  },[dispatch, cakes])
+  },[dispatch])
 
 
 
@@ -136,11 +136,9 @@ const CakeItems = () => {
         {currentItems.map((item) => (
           <div
             key={item._id}
-            className="text-center flex flex-col items-center border-[1px] border-primaryColor/50 rounded-[15px] py-[20px] px-[65px] relative"
+            className="text-center flex flex-col items-center border-[1px] border-primaryColor/50 rounded-[15px] py-[20px] px-[65px] "
           >
-            <p onClick={()=> deleteCakeHandler(item._id)} className="absolute top-2 right-2 text-2xl border border-primaryColor/10 p-2 rounded-[8px] hover:bg-primaryColor hover:text-secondaryColor duration-300 transition-colors">
-              <MdDeleteOutline />
-            </p>
+          
             <img
               src={item.cakeImage.url}
               alt={item.cakeName}
@@ -148,6 +146,10 @@ const CakeItems = () => {
             />
             <p className="text-[20px] font-[500] mt-4">{item.cakeName}</p>
             <p className="text-[20px] font-[500]">Rs. {item.cakePrice}</p>
+            <div onClick={()=> deleteCakeHandler(item._id)} className=" flex items-center justify-center gap-2 cursor-pointer py-2 px-2 mt-2 w-full rounded-[8px] bg-primaryColor text-secondaryColor hover:opacity-75 duration-300 transition-opacity">
+              <MdDeleteOutline />
+              <p>Delete Item</p>
+            </div>
           </div>
         ))}
       </div>

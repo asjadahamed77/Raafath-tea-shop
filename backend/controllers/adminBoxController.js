@@ -36,7 +36,7 @@ export const addBox = async (req, res) => {
 
     res.status(201).json({
       success: true,
-      message: "Cake added successfully",
+      message: "Box added successfully",
       box: newBox,
     });
   } catch (error) {
@@ -47,7 +47,7 @@ export const addBox = async (req, res) => {
 
 export const getAllBoxes = async (req, res) => {
     try {
-        const boxes = await cakeModel.find({});
+        const boxes = await boxModel.find({});
         res.status(200).json({ success: true, boxes });
     } catch (error) {
         console.error("Error fetching boxes:", error);
@@ -63,14 +63,14 @@ export const deleteBox = async (req, res) => {
     }
 
     try {
-        const box = await cakeModel.findById(id);
+        const box = await boxModel.findById(id);
         if (!box) {
             return res.status(404).json({ message: "Cake not found" });
         }
 
         // Delete image from Cloudinary
         if (box.boxImage && box.boxImage.public_id) {
-            await cloudinary.uploader.destroy(box.cakeImage.public_id);
+            await cloudinary.uploader.destroy(box.boxImage.public_id);
         }
 
         await boxModel.findByIdAndDelete(id);

@@ -54,12 +54,12 @@ const Sidebar = () => {
         <img src={boxItems} alt="Cake Items" className='w-[20px] h-[20px]' />
         <p className='text-[18px] font-light '>Payment Processes</p>
         </Link>
-        <p onClick={logoutHandler} className={`flex items-center gap-[15px] rounded-[8px] p-[15px] cursor-pointer hover:opacity-55 duration-150 transition-opacity border border-primaryColor/10 `}>
-          <p>
+        <div onClick={logoutHandler} className={`flex items-center gap-[15px] rounded-[8px] p-[15px] cursor-pointer hover:opacity-55 duration-150 transition-opacity border border-primaryColor/10 `}>
+          <div>
             <TbLogout2 className='text-[20px]' />
-          </p>
+          </div>
           <p>Logout</p>
-        </p>
+        </div>
       </div>
     </div>
   )

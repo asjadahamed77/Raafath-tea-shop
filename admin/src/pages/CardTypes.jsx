@@ -1,50 +1,19 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import searchIcon from "../assets/icons/search-icon.png";
-import cardImage from "../assets/box/card.png";
+
 import closeIcon from "../assets/icons/close.png";
 import imageUploadIcon from "../assets/icons/image-upload.png";
 import { RxCross2 } from "react-icons/rx";
 
-const cards = [
-  {
-    id: "001",
-    cardName: "Card Name",
-    cardPrice: "500",
-    cardImage: cardImage,
-  },
-  {
-    id: "002",
-    cardName: "Card Name",
-    cardPrice: "500",
-    cardImage: cardImage,
-  },
-  {
-    id: "003",
-    cardName: "Card Name",
-    cardPrice: "500",
-    cardImage: cardImage,
-  },
-  {
-    id: "004",
-    cardName: "Card Name",
-    cardPrice: "500",
-    cardImage: cardImage,
-  },
-  {
-    id: "005",
-    cardName: "Card Name",
-    cardPrice: "500",
-    cardImage: cardImage,
-  },
-  {
-    id: "006",
-    cardName: "Card Name",
-    cardPrice: "500",
-    cardImage: cardImage,
-  },
-];
+import { MdDeleteOutline } from "react-icons/md";
+import { useToast } from "../context/ToastContext";
+import { useDispatch, useSelector } from "react-redux";
+import { addCard, allCards, deleteCard } from "../redux/slices/authSlice";
 
 const CardTypes = () => {
+  const { addToast } = useToast();
+  const dispatch = useDispatch()
+  const { loading, error, cards } = useSelector((state) => state.auth);
   const [search, setSearch] = useState("");
   const [itemsPerPage, setItemsPerPage] = useState(4);
   const [currentPage, setCurrentPage] = useState(1);
@@ -71,10 +40,10 @@ const CardTypes = () => {
 
   // Filtered by search
   const filteredCards = useMemo(() => {
-    return cards.filter((cake) =>
-      cake.cardName.toLowerCase().includes(search.toLowerCase())
+    return cards.filter((card) =>
+      card.cardName.toLowerCase().includes(search.toLowerCase())
     );
-  }, [search]);
+  }, [search,cards]);
 
   const totalPages = Math.ceil(filteredCards.length / itemsPerPage);
 
@@ -90,6 +59,41 @@ const CardTypes = () => {
       setCurrentPage((prev) => prev + 1);
     }
   };
+
+
+  const submitHandler = async (e) => {
+    e.preventDefault();
+    if (!cardName || !cardPrice || !cardImageFile) {
+      return addToast("All Fields Required", "error", 3000);
+    }
+    const formData = new FormData()
+    formData.append("cardName", cardName)
+    formData.append("cardPrice", cardPrice)
+    formData.append("cardImage",cardImageFile)
+    try {
+      await dispatch(addCard(formData))
+      setShowPopup(false)
+      setCardName("")
+      setCardImageFile(null)
+      setCardImagePreview(null)
+      setCardPrice("")
+      await dispatch(allCards());
+    } catch (error) {
+      addToast("Error in adding card", "error", 3000)
+    }
+  };
+
+  const deleteCardHandler = (id) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this product?");
+    if (confirmDelete) {
+      dispatch(deleteCard(id));
+    }
+  };
+
+  useEffect(()=>{
+    dispatch(allCards())
+    
+  },[dispatch])
 
   return (
     <div className="">
@@ -132,12 +136,16 @@ const CardTypes = () => {
             className="text-center flex flex-col items-center border-[1px] border-primaryColor/50 rounded-[15px] py-[20px] px-[65px]"
           >
             <img
-              src={item.cardImage}
+              src={item.cardImage.url}
               alt={item.cardName}
               className="w-[148px] h-[180px]"
             />
             <p className="text-[20px] font-[500] mt-4">{item.cardName}</p>
             <p className="text-[20px] font-[500]">Rs. {item.cardPrice}</p>
+            <div onClick={()=> deleteCardHandler(item._id)} className=" flex items-center justify-center gap-2 cursor-pointer py-2 px-2 mt-2 w-full rounded-[8px] bg-primaryColor text-secondaryColor hover:opacity-75 duration-300 transition-opacity">
+              <MdDeleteOutline />
+              <p>Delete Item</p>
+            </div>
           </div>
         ))}
       </div>
@@ -198,7 +206,7 @@ const CardTypes = () => {
                 className="w-[15px]"
               />
             </div>
-            <form className="w-full px-[20px] flex flex-col gap-[15px] mt-8">
+            <form onSubmit={submitHandler} className="w-full px-[20px] flex flex-col gap-[15px] mt-8">
               <div className="w-full flex flex-col gap-[15px]">
                 <p className="text-[18px] font-[500]">Card Name</p>
                 <input
@@ -271,7 +279,7 @@ const CardTypes = () => {
                 />
               </div>
 
-              <button className="w-full py-[15px] text-[18px] font-light bg-primaryColor text-secondaryColor rounded-[8px] mt-8 cursor-pointer hover:opacity-75 duration-300 transition-opacity">
+              <button type="submit" className="w-full py-[15px] text-[18px] font-light bg-primaryColor text-secondaryColor rounded-[8px] mt-8 cursor-pointer hover:opacity-75 duration-300 transition-opacity">
                 Add Item
               </button>
             </form>

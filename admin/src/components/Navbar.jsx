@@ -55,7 +55,7 @@ const Navbar = () => {
 
       {/* Sliding Bottom Menu */}
       <div
-        className={`fixed z-50 bottom-0 left-0 w-full bg-secondaryColor p-6 rounded-t-xl shadow-xl transition-transform duration-300 ${
+        className={`fixed z-100 bottom-0 left-0 w-full bg-secondaryColor p-6 rounded-t-xl shadow-xl transition-transform duration-300 ${
           menuOpen ? 'translate-y-0' : 'translate-y-full'
         }`}
       >
@@ -80,10 +80,10 @@ const Navbar = () => {
             <img src={boxItems} alt="Payment Processes" className='w-[20px] h-[20px]' />
             <p className='text-[18px] font-light'>Payment Processes</p>
           </Link>
-          <p onClick={logoutHandler} className='flex items-center gap-[15px] rounded-[8px] p-[15px] cursor-pointer hover:opacity-55 transition-opacity border border-primaryColor/10'>
+          <div onClick={logoutHandler} className='flex items-center gap-[15px] rounded-[8px] p-[15px] cursor-pointer hover:opacity-55 transition-opacity border border-primaryColor/10'>
             <TbLogout2 className='text-[20px]' />
             <span>Logout</span>
-          </p>
+          </div>
         </div>
       </div>
     </div>

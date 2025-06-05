@@ -6,6 +6,8 @@ import { backendUrl } from "../../services/api";
 const initialState = {
   admin: null,
   cakes: [],
+  cards: [],
+  boxes: [],
   loading: false,
   error: null,
 };
@@ -106,6 +108,141 @@ export const deleteCake = createAsyncThunk(
     }
   }
 );
+export const addCard = createAsyncThunk(
+  "auth/addCard",
+  async (formData, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.post(
+        `${backendUrl}/auth/admin/add-card`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${admintoken}`,
+          },
+        }
+      );
+      return data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to add card"
+      );
+    }
+  }
+);
+export const allCards = createAsyncThunk(
+  "auth/allCards",
+  async (_, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.get(`${backendUrl}/auth/admin/cards`, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${admintoken}`,
+        },
+      });
+      if (data.success) {
+        return data;
+      }
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to fetch cards"
+      );
+    }
+  }
+);
+export const deleteCard = createAsyncThunk(
+  "auth/deleteCard",
+  async (cakeId, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.delete(
+        `${backendUrl}/auth/admin/delete-card/${cakeId}`,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${admintoken}`,
+          },
+        }
+      );
+      if (data.success) {
+        return { id: cakeId };
+      } else {
+        return rejectWithValue(data.message);
+      }
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to delete card"
+      );
+    }
+  }
+);
+
+export const addBox = createAsyncThunk(
+  "auth/addBox",
+  async (formData, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.post(
+        `${backendUrl}/auth/admin/add-box`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${admintoken}`,
+          },
+        }
+      );
+      return data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to add box"
+      );
+    }
+  }
+);
+export const allBoxes = createAsyncThunk(
+  "auth/allBoxes",
+  async (_, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.get(`${backendUrl}/auth/admin/boxes`, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${admintoken}`,
+        },
+      });
+      if (data.success) {
+        return data;
+      }
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to fetch boxes"
+      );
+    }
+  }
+);
+export const deleteBox = createAsyncThunk(
+  "auth/deleteBox",
+  async (boxId, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.delete(
+        `${backendUrl}/auth/admin/delete-box/${boxId}`,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${admintoken}`,
+          },
+        }
+      );
+      if (data.success) {
+        return { id: boxId };
+      } else {
+        return rejectWithValue(data.message);
+      }
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to delete box"
+      );
+    }
+  }
+);
 
 // SLICE
 const authSlice = createSlice({
@@ -176,6 +313,85 @@ const authSlice = createSlice({
         )
       })
       .addCase(deleteCake.rejected, (state,action)=>{
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+       // Add Cards
+       .addCase(addCard.pending, (state) => {
+        state.loading = true;
+        state.error = false;
+      })
+      .addCase(addCard.fulfilled, (state, action) => {
+        state.loading = false;
+        state.cards.push(action.payload.card);
+      })
+      .addCase(addCard.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(allCards.pending, (state) => {
+        state.loading = true;
+        state.error = false;
+      })
+      .addCase(allCards.fulfilled, (state, action) => {
+        state.loading = false;
+        state.cards = action.payload.cards;
+      })
+      .addCase(allCards.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(deleteCard.pending, (state)=>{
+        state.loading = true;
+        state.error = false;
+      })
+      .addCase(deleteCard.fulfilled, (state,action)=>{
+        state.loading = false;
+        state.cards = state.cards.filter(
+          (card) => card._id !== action.payload.id
+        )
+      })
+      .addCase(deleteCard.rejected, (state,action)=>{
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      .addCase(addBox.pending, (state) => {
+        state.loading = true;
+        state.error = false;
+      })
+      .addCase(addBox.fulfilled, (state, action) => {
+        state.loading = false;
+        state.boxes.push(action.payload.box);
+      })
+      .addCase(addBox.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(allBoxes.pending, (state) => {
+        state.loading = true;
+        state.error = false;
+      })
+      .addCase(allBoxes.fulfilled, (state, action) => {
+        state.loading = false;
+        state.boxes = action.payload.boxes;
+      })
+      .addCase(allBoxes.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(deleteBox.pending, (state)=>{
+        state.loading = true;
+        state.error = false;
+      })
+      .addCase(deleteBox.fulfilled, (state,action)=>{
+        state.loading = false;
+        state.boxes = state.boxes.filter(
+          (box) => box._id !== action.payload.id
+        )
+      })
+      .addCase(deleteBox.rejected, (state,action)=>{
         state.loading = false;
         state.error = action.payload;
       })
