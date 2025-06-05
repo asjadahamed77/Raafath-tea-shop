@@ -11,8 +11,8 @@ const cakeSchema = new mongoose.Schema(
             required: true,
         },
         cakeImage : {
-            type: String,
-            required: true,
+            url: String,
+    public_id: String
         },
         category: {
             type: String,
