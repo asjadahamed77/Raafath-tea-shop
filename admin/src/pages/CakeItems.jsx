@@ -1,113 +1,17 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import searchIcon from "../assets/icons/search-icon.png";
-import cakeImage from "../assets/box/cake.png";
 import closeIcon from "../assets/icons/close.png";
 import imageUploadIcon from "../assets/icons/image-upload.png";
 import { RxCross2 } from "react-icons/rx";
-
-const allCakes = [
-  // same static cakes list as before...
-  {
-    id: "001",
-    cakeName: "Chocolate Cake",
-    cakePrice: "2000",
-    cakeImage,
-    category: "cup cake",
-  },
-  {
-    id: "002",
-    cakeName: "Vanilla Delight",
-    cakePrice: "2000",
-    cakeImage,
-    category: "bento cake",
-  },
-  {
-    id: "003",
-    cakeName: "Strawberry Layer",
-    cakePrice: "2000",
-    cakeImage,
-    category: "layer cake",
-  },
-  {
-    id: "004",
-    cakeName: "Fruit Jar",
-    cakePrice: "2000",
-    cakeImage,
-    category: "jar cake",
-  },
-  {
-    id: "005",
-    cakeName: "Mini Cupcake",
-    cakePrice: "2000",
-    cakeImage,
-    category: "cup cake",
-  },
-  {
-    id: "006",
-    cakeName: "Nutty Jar",
-    cakePrice: "2000",
-    cakeImage,
-    category: "jar cake",
-  },
-  {
-    id: "007",
-    cakeName: "Butter Layer",
-    cakePrice: "2000",
-    cakeImage,
-    category: "layer cake",
-  },
-  {
-    id: "008",
-    cakeName: "Bento Strawberry",
-    cakePrice: "2000",
-    cakeImage,
-    category: "bento cake",
-  },
-  {
-    id: "009",
-    cakeName: "Deluxe Layer",
-    cakePrice: "2000",
-    cakeImage,
-    category: "layer cake",
-  },
-  {
-    id: "010",
-    cakeName: "Classic Jar",
-    cakePrice: "2000",
-    cakeImage,
-    category: "jar cake",
-  },
-  {
-    id: "011",
-    cakeName: "Rainbow Cup",
-    cakePrice: "2000",
-    cakeImage,
-    category: "cup cake",
-  },
-  {
-    id: "012",
-    cakeName: "Mango Jar",
-    cakePrice: "2000",
-    cakeImage,
-    category: "jar cake",
-  },
-  {
-    id: "013",
-    cakeName: "Triple Layer",
-    cakePrice: "2000",
-    cakeImage,
-    category: "layer cake",
-  },
-  {
-    id: "014",
-    cakeName: "Bento Love",
-    cakePrice: "2000",
-    cakeImage,
-    category: "bento cake",
-  },
-];
+import { useToast } from "../context/ToastContext";
+import { useDispatch, useSelector } from "react-redux";
+import { addCakes, allCakes, deleteCake } from "../redux/slices/authSlice";
+import { MdDeleteOutline } from "react-icons/md";
 
 const CakeItems = () => {
+  const { addToast } = useToast();
+  const dispatch = useDispatch()
+  const { loading, error, cakes } = useSelector((state) => state.auth);
   const [search, setSearch] = useState("");
   const [itemsPerPage, setItemsPerPage] = useState(4);
   const [currentPage, setCurrentPage] = useState(1);
@@ -132,12 +36,14 @@ const CakeItems = () => {
     setCakeImageFile(null);
   };
 
+
+
   // Filtered by search
   const filteredCakes = useMemo(() => {
-    return allCakes.filter((cake) =>
+    return cakes.filter((cake) =>
       cake.cakeName.toLowerCase().includes(search.toLowerCase())
     );
-  }, [search]);
+  }, [search,cakes]);
 
   const totalPages = Math.ceil(filteredCakes.length / itemsPerPage);
 
@@ -153,6 +59,44 @@ const CakeItems = () => {
       setCurrentPage((prev) => prev + 1);
     }
   };
+
+  const submitHandler = async (e) => {
+    e.preventDefault();
+    if (!cakeName || !cakePrice || !cakeImageFile) {
+      return addToast("All Fields Required", "error", 3000);
+    }
+    const formData = new FormData()
+    formData.append("cakeName", cakeName)
+    formData.append("cakePrice", cakePrice)
+    formData.append("cakeImage",cakeImageFile)
+    try {
+      await dispatch(addCakes(formData))
+      setShowPopup(false)
+      setCakeName("")
+      setCakeImageFile(null)
+      setCakeImagePreview(null)
+      setCakePrice("")
+      await dispatch(allCakes());
+    } catch (error) {
+      addToast("Error in adding cakes", "error", 3000)
+    }
+  };
+
+  const deleteCakeHandler = (id) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this product?");
+    if (confirmDelete) {
+      dispatch(deleteCake(id));
+    }
+  };
+
+  useEffect(()=>{
+    dispatch(allCakes())
+    
+  },[dispatch, cakes])
+
+
+
+
 
   return (
     <div className="">
@@ -183,7 +127,7 @@ const CakeItems = () => {
           onClick={() => setShowPopup(true)}
           className="text-sm sm:text-[18px] bg-primaryColor text-secondaryColor py-[15px] px-[20px] font-light rounded-[8px] hover:opacity-75 duration-300 transition-opacity cursor-pointer"
         >
-         + Add new
+          + Add new
         </button>
       </div>
 
@@ -191,11 +135,14 @@ const CakeItems = () => {
       <div className="grid xl:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-[30px] mt-12">
         {currentItems.map((item) => (
           <div
-            key={item.id}
-            className="text-center flex flex-col items-center border-[1px] border-primaryColor/50 rounded-[15px] py-[20px] px-[65px]"
+            key={item._id}
+            className="text-center flex flex-col items-center border-[1px] border-primaryColor/50 rounded-[15px] py-[20px] px-[65px] relative"
           >
+            <p onClick={()=> deleteCakeHandler(item._id)} className="absolute top-2 right-2 text-2xl border border-primaryColor/10 p-2 rounded-[8px] hover:bg-primaryColor hover:text-secondaryColor duration-300 transition-colors">
+              <MdDeleteOutline />
+            </p>
             <img
-              src={item.cakeImage}
+              src={item.cakeImage.url}
               alt={item.cakeName}
               className="w-[148px] h-[180px]"
             />
@@ -261,7 +208,10 @@ const CakeItems = () => {
                 className="w-[15px]"
               />
             </div>
-            <form className="w-full px-[20px] flex flex-col gap-[15px] mt-8">
+            <form
+              onSubmit={submitHandler}
+              className="w-full px-[20px] flex flex-col gap-[15px] mt-8"
+            >
               <div className="w-full flex flex-col gap-[15px]">
                 <p className="text-[18px] font-[500]">Cake Name</p>
                 <input
