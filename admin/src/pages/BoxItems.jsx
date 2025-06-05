@@ -1,50 +1,19 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import searchIcon from "../assets/icons/search-icon.png";
-import boxImage from "../assets/box/box.png";
+
 import closeIcon from "../assets/icons/close.png";
 import imageUploadIcon from "../assets/icons/image-upload.png";
 import { RxCross2 } from "react-icons/rx";
+import { MdDeleteOutline } from "react-icons/md";
+import { useToast } from "../context/ToastContext";
+import { useDispatch, useSelector } from "react-redux";
+import { addBox, allBoxes, deleteBox } from "../redux/slices/authSlice";
 
-const boxes = [
-  {
-    id: "001",
-    boxName: "Box Name",
-    boxPrice: "1000",
-    boxImage: boxImage,
-  },
-  {
-    id: "002",
-    boxName: "Box Name",
-    boxPrice: "1000",
-    boxImage: boxImage,
-  },
-  {
-    id: "003",
-    boxName: "Box Name",
-    boxPrice: "1000",
-    boxImage: boxImage,
-  },
-  {
-    id: "004",
-    boxName: "Box Name",
-    boxPrice: "1000",
-    boxImage: boxImage,
-  },
-  {
-    id: "005",
-    boxName: "Box Name",
-    boxPrice: "1000",
-    boxImage: boxImage,
-  },
-  {
-    id: "006",
-    boxName: "Box Name",
-    boxPrice: "1000",
-    boxImage: boxImage,
-  },
-];
 
 const BoxItems = () => {
+  const { addToast } = useToast();
+  const dispatch = useDispatch()
+  const { loading, error, boxes } = useSelector((state) => state.auth);
   const [search, setSearch] = useState("");
   const [itemsPerPage, setItemsPerPage] = useState(4);
   const [currentPage, setCurrentPage] = useState(1);
@@ -74,7 +43,7 @@ const BoxItems = () => {
     return boxes.filter((box) =>
       box.boxName.toLowerCase().includes(search.toLowerCase())
     );
-  }, [search]);
+  }, [search,boxes]);
 
   const totalPages = Math.ceil(filteredBoxes.length / itemsPerPage);
 
@@ -90,6 +59,40 @@ const BoxItems = () => {
       setCurrentPage((prev) => prev + 1);
     }
   };
+
+  const submitHandler = async (e) => {
+    e.preventDefault();
+    if (!boxName || !boxPrice || !boxImageFile) {
+      return addToast("All Fields Required", "error", 3000);
+    }
+    const formData = new FormData()
+    formData.append("boxName", boxName)
+    formData.append("boxPrice", boxPrice)
+    formData.append("boxImage",boxImageFile)
+    try {
+      await dispatch(addBox(formData))
+      setShowPopup(false)
+      setBoxName("")
+      setBoxImageFile(null)
+      setBoxImagePreview(null)
+      setBoxPrice("")
+      await dispatch(allBoxes());
+    } catch (error) {
+      addToast("Error in adding box", "error", 3000)
+    }
+  };
+
+  const deleteBoxHandler = (id) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this product?");
+    if (confirmDelete) {
+      dispatch(deleteBox(id));
+    }
+  };
+
+  useEffect(()=>{
+    dispatch(allBoxes())
+    
+  },[dispatch])
 
   return (
     <div className="">
@@ -129,15 +132,20 @@ const BoxItems = () => {
         {currentItems.map((item) => (
           <div
             key={item.id}
-            className="text-center flex flex-col items-center border-[1px] border-primaryColor/50 rounded-[15px] py-[20px] px-[65px]"
+            className=" text-center flex flex-col items-center border-[1px] border-primaryColor/50 rounded-[15px] py-[20px] px-[65px]"
           >
+             
             <img
-              src={item.boxImage}
+              src={item.boxImage.url}
               alt={item.boxName}
               className="w-[148px] h-[180px]"
             />
             <p className="text-[20px] font-[500] mt-4">{item.boxName}</p>
             <p className="text-[20px] font-[500]">Rs. {item.boxPrice}</p>
+            <div onClick={()=> deleteBoxHandler(item._id)} className=" flex items-center justify-center gap-2 cursor-pointer py-2 px-2 mt-2 w-full rounded-[8px] bg-primaryColor text-secondaryColor hover:opacity-75 duration-300 transition-opacity">
+              <MdDeleteOutline />
+              <p>Delete Item</p>
+            </div>
           </div>
         ))}
       </div>
@@ -198,7 +206,7 @@ const BoxItems = () => {
                 className="w-[15px]"
               />
             </div>
-            <form className="w-full px-[20px] flex flex-col gap-[15px] mt-8">
+            <form onSubmit={submitHandler} className="w-full px-[20px] flex flex-col gap-[15px] mt-8">
               <div className="w-full flex flex-col gap-[15px]">
                 <p className="text-[18px] font-[500]">Box Name</p>
                 <input

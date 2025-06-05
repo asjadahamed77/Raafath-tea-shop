@@ -27,7 +27,7 @@ export const addCard = async (req, res) => {
     }
 
     const newCard = new cardModel({
-      cardImage,
+      cardName,
       cardPrice,
       cardImage: uploadedImage, // store single image object
     });
