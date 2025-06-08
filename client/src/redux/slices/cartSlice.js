@@ -10,6 +10,8 @@ const initialState = {
 
 const token = localStorage.getItem("userToken");
 
+
+
 // Async thunk to add cakes to cart
 export const addCakesToCart = createAsyncThunk(
   "cart/addCakesToCart",
@@ -38,6 +40,28 @@ export const addCakesToCart = createAsyncThunk(
     }
   }
 );
+export const getCartCakes = createAsyncThunk(
+    "cart/getCartCakes", 
+    async (userId, { rejectWithValue }) => { // Remove the destructuring here
+      try {
+        const { data } = await axios.get(
+          `${backendUrl}/cart/get-cart-cakes`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            params: { userId } // Pass userId as a query parameter
+          }
+        );
+        return data.cart;
+      } catch (error) {
+        return rejectWithValue(
+          error.response?.data?.message || "Failed to fetch cart"
+        );
+      }
+    }
+  );
 
 // Slice
 const cartSlice = createSlice({
@@ -56,6 +80,19 @@ const cartSlice = createSlice({
         state.cartCakes = action.payload.cakes; 
       })
       .addCase(addCakesToCart.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(getCartCakes.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getCartCakes.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = null;
+        state.cartCakes = action.payload.cakes || [];
+      })
+      .addCase(getCartCakes.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
