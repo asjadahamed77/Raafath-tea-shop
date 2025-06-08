@@ -1,153 +1,27 @@
 import React, { useState } from "react";
-import boxImage from "../assets/box/box.png";
-import cakeImage from "../assets/box/cake.png";
-import cardImage from "../assets/box/card.png";
+
 import { useNavigate } from "react-router-dom";
 import { useToast } from "../context/ToastContext";
+import { useSelector, useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { allBoxes, allCakes, allCards } from "../redux/slices/userSlice";
+
 
 const Box = () => {
   const navigate = useNavigate();
   const { addToast } = useToast();
+  const { cakes, cards, boxes } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
 
   const [chooseCake, setChooseCake] = useState(true);
   const [chooseBox, setChooseBox] = useState(false);
   const [chooseCard, setChooseCard] = useState(false);
-  const box = [
-    {
-      id: "001",
-      boxName: "Box Name",
-      boxPrice: "LKR 1000",
-      boxImage: boxImage,
-    },
-    {
-      id: "002",
-      boxName: "Box Name",
-      boxPrice: "LKR 1000",
-      boxImage: boxImage,
-    },
-    {
-      id: "003",
-      boxName: "Box Name",
-      boxPrice: "LKR 1000",
-      boxImage: boxImage,
-    },
-    {
-      id: "004",
-      boxName: "Box Name",
-      boxPrice: "LKR 1000",
-      boxImage: boxImage,
-    },
-    {
-      id: "005",
-      boxName: "Box Name",
-      boxPrice: "LKR 1000",
-      boxImage: boxImage,
-    },
-    {
-      id: "006",
-      boxName: "Box Name",
-      boxPrice: "LKR 1000",
-      boxImage: boxImage,
-    },
-  ];
 
-  const cakes = [
-    {
-      id: "001",
-      cakeName: "Cake Name",
-      cakePrice: "LKR 2000",
-      cakeImage: cakeImage,
-      category: "cup cake",
-    },
-    {
-      id: "002",
-      cakeName: "Cake Name",
-      cakePrice: "LKR 2000",
-      cakeImage: cakeImage,
-      category: "bento cake",
-    },
-    {
-      id: "003",
-      cakeName: "Cake Name",
-      cakePrice: "LKR 2000",
-      cakeImage: cakeImage,
-      category: "layer cake",
-    },
-    {
-      id: "004",
-      cakeName: "Cake Name",
-      cakePrice: "LKR 2000",
-      cakeImage: cakeImage,
-      category: "jar cake",
-    },
-    {
-      id: "005",
-      cakeName: "Cake Name",
-      cakePrice: "LKR 2000",
-      cakeImage: cakeImage,
-      category: "cup cake",
-    },
-    {
-      id: "006",
-      cakeName: "Cake Name",
-      cakePrice: "LKR 2000",
-      cakeImage: cakeImage,
-      category: "jar cake",
-    },
-    {
-      id: "007",
-      cakeName: "Cake Name",
-      cakePrice: "LKR 2000",
-      cakeImage: cakeImage,
-      category: "layer cake",
-    },
-    {
-      id: "008",
-      cakeName: "Cake Name",
-      cakePrice: "LKR 2000",
-      cakeImage: cakeImage,
-      category: "bento cake",
-    },
-  ];
 
-  const cards = [
-    {
-      id: "001",
-      cardName: "Card Name",
-      cardPrice: "LKR 500",
-      cardImage: cardImage,
-    },
-    {
-      id: "002",
-      cardName: "Card Name",
-      cardPrice: "LKR 500",
-      cardImage: cardImage,
-    },
-    {
-      id: "003",
-      cardName: "Card Name",
-      cardPrice: "LKR 500",
-      cardImage: cardImage,
-    },
-    {
-      id: "004",
-      cardName: "Card Name",
-      cardPrice: "LKR 500",
-      cardImage: cardImage,
-    },
-    {
-      id: "005",
-      cardName: "Card Name",
-      cardPrice: "LKR 500",
-      cardImage: cardImage,
-    },
-    {
-      id: "006",
-      cardName: "Card Name",
-      cardPrice: "LKR 500",
-      cardImage: cardImage,
-    },
-  ];
+
+
+
+
 
   const uniqueCategories = [...new Set(cakes.map((cake) => cake.category))];
 
@@ -235,6 +109,17 @@ const Box = () => {
     window.scrollTo(0, 0);
   }
 
+  useEffect(()=>{
+    dispatch(allCakes());
+  },[dispatch])
+
+  useEffect(()=>{
+    dispatch(allBoxes());
+  },[dispatch])
+  useEffect(()=>{
+    dispatch(allCards());
+  },[dispatch])
+
   return (
     <div className="xl:px-[120px] lg:px-[40px] md:px-[20px] sm:px-[16px] px-4 py-20 flex flex-col  ">
       {chooseCake && (
@@ -283,24 +168,24 @@ const Box = () => {
               >
                 <div className="w-[215px] h-[262px]">
                   <img
-                    src={item.cakeImage}
+                    src={item.cakeImage.url}
                     alt={item.cakeName}
                     className="w-full h-full  aspect-square "
                   />
                 </div>
                 <div className="flex flex-col gap-[8px]">
                   <p className="text-[18px] font-[500]">{item.cakeName}</p>
-                  <p className="text-[18px] font-[500]">{item.cakePrice}</p>
+                  <p className="text-[18px] font-[500]">Rs. {item.cakePrice}</p>
                 </div>
                 <button
-                  onClick={() => toggleCakeSelection(item.id)}
+                  onClick={() => toggleCakeSelection(item._id)}
                   className={`w-fit py-[16px] px-[58px] rounded-full font-light border-[2px] text-[18px] transition-colors duration-300 ${
-                    selectedCakes.includes(item.id)
+                    selectedCakes.includes(item._id)
                       ? "bg-primaryColor text-secondaryColor"
                       : "hover:bg-primaryColor hover:text-secondaryColor"
                   }`}
                 >
-                  {selectedCakes.includes(item.id) ? "Added" : "Add to Box"}
+                  {selectedCakes.includes(item._id) ? "Added" : "Add to Box"}
                 </button>
               </div>
             ))}
@@ -337,9 +222,9 @@ const Box = () => {
           </div>
 
           <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-12 my-20 place-items-center ">
-            {box.map((item, index) => (
+            {boxes.map((item, index) => (
               <div
-                key={item.id}
+                key={index}
                 onClick={() => handleBoxSelect(index)}
                 className={`lg:w-[370px] h-[435px] flex flex-col items-center rounded-[30px] shadow-[4px_4px_14px_0]/30 hover:shadow-[4px_4px_14px_0]/70 cursor-pointer  ${
                   boxSelected === index
@@ -349,13 +234,13 @@ const Box = () => {
               >
                 <div className="min-w-[286px] min-h-[286px]">
                   <img
-                    src={item.boxImage}
+                    src={item.boxImage.url}
                     alt={item.boxName}
                     className="w-full h-full p-8 aspect-square"
                   />
                 </div>
-                <p className="text-[18px] font-light">{item.boxName}</p>
-                <p className="text-[18px] font-light">{item.boxPrice}</p>
+                <p className="text-[18px] font-[500] ">{item.boxName}</p>
+                <p className="text-[18px] font-[500]">Rs. {item.boxPrice}</p>
               </div>
             ))}
           </div>
@@ -400,13 +285,13 @@ const Box = () => {
               >
                 <div className=" w-[180px] h-[262px]">
                   <img
-                    src={item.cardImage}
+                    src={item.cardImage.url}
                     alt={item.cardName}
                     className="w-full h-full  aspect-square"
                   />
                 </div>
-                <p className="text-[18px] font-light mt-8">{item.cardName}</p>
-                <p className="text-[18px] font-light">{item.cardPrice}</p>
+                <p className="text-[18px] font-[500] mt-8">{item.cardName}</p>
+                <p className="text-[18px] font-[500]">Rs. {item.cardPrice}</p>
               </div>
             ))}
           </div>
