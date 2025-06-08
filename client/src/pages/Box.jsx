@@ -5,6 +5,7 @@ import { useToast } from "../context/ToastContext";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { allBoxes, allCakes, allCards } from "../redux/slices/userSlice";
+import { addCakesToCart } from "../redux/slices/cartSlice";
 
 
 const Box = () => {
@@ -24,18 +25,47 @@ const Box = () => {
 
   const uniqueCategories = [...new Set(cakes.map((cake) => cake.category))];
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (selectedCakes.length === 0) {
       addToast("Please select at least one cake to proceed.", "error", 3000);
-
       return;
     }
   
-    addToast("Cake selected successfully!", "success", 3000);
-    setChooseCake(false);
-    setChooseBox(true);
-    window.scrollTo(0, 0);
+    try {
+      for (const cakeId of selectedCakes) {
+        const cake = cakes.find(cake => cake._id === cakeId);
+        
+        
+  
+        if (!cake) {
+          throw new Error("Selected cake not found.");
+        }
+  
+        const result = await dispatch(addCakesToCart({
+          userId: user._id,
+          cakeId,
+          quantity: 1,
+          price: cake.cakePrice, 
+        
+          
+        }));
+        
+  
+        if (addCakesToCart.rejected.match(result)) {
+          throw new Error(result.payload);
+        }
+      }
+  
+      addToast("Cake(s) added to cart successfully!", "success", 3000);
+      setChooseCake(false);
+      setChooseBox(true);
+      window.scrollTo(0, 0);
+    } catch (error) {
+      addToast(error.message || "Something went wrong while adding cakes.", "error", 3000);
+    }
   };
+  
+  
 
   const handleBack = () => {
     navigate("/#buildBox");
