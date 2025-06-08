@@ -1,4 +1,5 @@
 import Cart from "../models/cartModel.js";
+import mongoose from "mongoose";
 
 const upsertItemInCart = async (userId, itemId, itemType, quantity = 1) => {
     let cart = await Cart.findOne({ userId });
@@ -76,3 +77,23 @@ const upsertItemInCart = async (userId, itemId, itemType, quantity = 1) => {
       res.status(500).json({ message: 'Failed to add card to cart' });
     }
   };
+
+  export const getCart = async (req, res) => {
+    const userId = req.user.id;
+    
+  
+    try {
+      const cart = await Cart.findOne({ userId })
+      
+  
+      if (!cart) {
+        return res.status(404).json({ success: false, message: 'Cart not found' });
+      }
+  
+      res.status(200).json({ success: true, cart });
+    } catch (error) {
+      console.error('Error getting cart:', error);
+      res.status(500).json({ success: false, message: 'Internal Server Error' });
+    }
+  };
+  
