@@ -10,7 +10,7 @@ import { MdDeleteOutline } from "react-icons/md";
 
 const CakeItems = () => {
   const { addToast } = useToast();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const { loading, error, cakes } = useSelector((state) => state.auth);
   const [search, setSearch] = useState("");
   const [itemsPerPage, setItemsPerPage] = useState(4);
@@ -19,6 +19,7 @@ const CakeItems = () => {
 
   const [cakeName, setCakeName] = useState("");
   const [cakePrice, setCakePrice] = useState("");
+  const [category, setCategory] = useState("");
 
   const [cakeImagePreview, setCakeImagePreview] = useState(null);
   const [cakeImageFile, setCakeImageFile] = useState(null);
@@ -36,14 +37,12 @@ const CakeItems = () => {
     setCakeImageFile(null);
   };
 
-
-
   // Filtered by search
   const filteredCakes = useMemo(() => {
     return cakes.filter((cake) =>
       cake.cakeName.toLowerCase().includes(search.toLowerCase())
     );
-  }, [search,cakes]);
+  }, [search, cakes]);
 
   const totalPages = Math.ceil(filteredCakes.length / itemsPerPage);
 
@@ -65,38 +64,37 @@ const CakeItems = () => {
     if (!cakeName || !cakePrice || !cakeImageFile) {
       return addToast("All Fields Required", "error", 3000);
     }
-    const formData = new FormData()
-    formData.append("cakeName", cakeName)
-    formData.append("cakePrice", cakePrice)
-    formData.append("cakeImage",cakeImageFile)
+    const formData = new FormData();
+    formData.append("cakeName", cakeName);
+    formData.append("cakePrice", cakePrice);
+    formData.append("cakeImage", cakeImageFile);
+    formData.append("category", category);
     try {
-      await dispatch(addCakes(formData))
-      setShowPopup(false)
-      setCakeName("")
-      setCakeImageFile(null)
-      setCakeImagePreview(null)
-      setCakePrice("")
+      await dispatch(addCakes(formData));
+      setShowPopup(false);
+      setCakeName("");
+      setCakeImageFile(null);
+      setCakeImagePreview(null);
+      setCategory("");
+      setCakePrice("");
       await dispatch(allCakes());
     } catch (error) {
-      addToast("Error in adding cakes", "error", 3000)
+      addToast("Error in adding cakes", "error", 3000);
     }
   };
 
   const deleteCakeHandler = (id) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this product?");
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this product?"
+    );
     if (confirmDelete) {
       dispatch(deleteCake(id));
     }
   };
 
-  useEffect(()=>{
-    dispatch(allCakes())
-    
-  },[dispatch])
-
-
-
-
+  useEffect(() => {
+    dispatch(allCakes());
+  }, [dispatch]);
 
   return (
     <div className="">
@@ -138,7 +136,6 @@ const CakeItems = () => {
             key={item._id}
             className="text-center flex flex-col items-center border-[1px] border-primaryColor/50 rounded-[15px] py-[20px] px-[65px] "
           >
-          
             <img
               src={item.cakeImage.url}
               alt={item.cakeName}
@@ -146,7 +143,10 @@ const CakeItems = () => {
             />
             <p className="text-[20px] font-[500] mt-4">{item.cakeName}</p>
             <p className="text-[20px] font-[500]">Rs. {item.cakePrice}</p>
-            <div onClick={()=> deleteCakeHandler(item._id)} className=" flex items-center justify-center gap-2 cursor-pointer py-2 px-2 mt-2 w-full rounded-[8px] bg-primaryColor text-secondaryColor hover:opacity-75 duration-300 transition-opacity">
+            <div
+              onClick={() => deleteCakeHandler(item._id)}
+              className=" flex items-center justify-center gap-2 cursor-pointer py-2 px-2 mt-2 w-full rounded-[8px] bg-primaryColor text-secondaryColor hover:opacity-75 duration-300 transition-opacity"
+            >
               <MdDeleteOutline />
               <p>Delete Item</p>
             </div>
@@ -200,7 +200,7 @@ const CakeItems = () => {
         <div
           className={`fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-6 sm:px-0 `}
         >
-          <div className="sm:w-[460px] py-[25px] bg-secondaryColor rounded-[12px] w-full">
+          <div className="sm:w-[460px] py-[25px] bg-secondaryColor rounded-[12px] w-full overflow-y-scroll">
             <div className="flex items-center justify-between  border-b p-[25px] pt-0">
               <h1 className="font-[500] text-[20px]">Add New Cake</h1>
               <img
@@ -235,6 +235,21 @@ const CakeItems = () => {
                   required
                   className="py-[15px] px-[20px] w-full rounded-[6px] border border-primaryColor/50 focus:outline-none focus:ring-2 focus:ring-primaryColor focus:ring-offset-1 transition duration-150 ease-in-out"
                 />
+              </div>
+              <div>
+                <p className="text-[18px] font-[500]">Cake Category</p>
+                <select
+                  required
+                  className="mt-1 py-[15px] px-[20px] w-full rounded-[6px] border border-primaryColor/50 focus:outline-none focus:ring-2 focus:ring-primaryColor focus:ring-offset-1 transition duration-150 ease-in-out"
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                >
+                  <option value="">Select Category</option>
+                  <option value="Layer Cakes">Layer Cakes</option>
+                  <option value="Cup Cakes">Cup Cakes</option>
+                  <option value="Bento Cakes">Bento Cakes</option>
+                  <option value="Jar Cakes">Jar Cakes</option>
+                </select>
               </div>
               <div className="w-full flex flex-col gap-[15px]">
                 <p className="text-[18px] font-[500]">Add an image</p>
