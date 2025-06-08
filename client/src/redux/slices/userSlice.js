@@ -17,7 +17,7 @@ const initialState = {
     "auth/allCakes",
     async (_, { rejectWithValue }) => {
       try {
-        const { data } = await axios.get(`${backendUrl}/auth/user/cakes`, {
+        const { data } = await axios.get(`${backendUrl}/auth/cakes`, {
           headers: {
             "Content-Type": "multipart/form-data",
       
@@ -38,7 +38,7 @@ const initialState = {
     "auth/allCards",
     async (_, { rejectWithValue }) => {
       try {
-        const { data } = await axios.get(`${backendUrl}/auth/user/cards`, {
+        const { data } = await axios.get(`${backendUrl}/auth/cards`, {
           headers: {
             "Content-Type": "multipart/form-data",
            
@@ -59,7 +59,7 @@ const initialState = {
     "auth/allBoxes",
     async (_, { rejectWithValue }) => {
       try {
-        const { data } = await axios.get(`${backendUrl}/auth/user/boxes`, {
+        const { data } = await axios.get(`${backendUrl}/auth/boxes`, {
           headers: {
             "Content-Type": "multipart/form-data",
          
