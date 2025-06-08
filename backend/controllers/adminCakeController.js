@@ -11,9 +11,9 @@ const uploadToCloudinary = async (path) => {
 };
 
 export const addCake = async (req, res) => {
-  const { cakeName, cakePrice } = req.body;
+  const { cakeName, cakePrice, category } = req.body;
 
-  if (!cakeName || !cakePrice) {
+  if (!cakeName || !cakePrice || !category) {
     return res.status(400).json({ message: "All fields are required" });
   }
 
@@ -23,12 +23,13 @@ export const addCake = async (req, res) => {
     let uploadedImage = null;
     if (cakeImage) {
       uploadedImage = await uploadToCloudinary(cakeImage.path);
-      fs.unlinkSync(cakeImage.path); // Remove local file after uploading
+      fs.unlinkSync(cakeImage.path); 
     }
 
     const newCake = new cakeModel({
       cakeName,
       cakePrice,
+      category,
       cakeImage: uploadedImage, // store single image object
     });
 

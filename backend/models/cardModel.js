@@ -13,6 +13,10 @@ const cardSchema = new mongoose.Schema({
     url: String,
     public_id: String,
   },
+  itemType : {
+    type: String,
+    default: "Card"
+  }
   
 });
 

@@ -16,6 +16,10 @@ const cakeSchema = new mongoose.Schema({
   category: {
     type: String,
   },
+  itemType : {
+    type: String,
+    default: "Cake"
+  }
 });
 
 const cakeModel = mongoose.models.Cake || mongoose.model("Cake", cakeSchema);

@@ -11,13 +11,12 @@ const Box = () => {
   const navigate = useNavigate();
   const { addToast } = useToast();
   const { cakes, cards, boxes } = useSelector((state) => state.user);
+  const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
   const [chooseCake, setChooseCake] = useState(true);
   const [chooseBox, setChooseBox] = useState(false);
   const [chooseCard, setChooseCard] = useState(false);
-
-
 
 
 
@@ -31,6 +30,7 @@ const Box = () => {
 
       return;
     }
+  
     addToast("Cake selected successfully!", "success", 3000);
     setChooseCake(false);
     setChooseBox(true);
@@ -148,16 +148,16 @@ const Box = () => {
             </button>
             {uniqueCategories.map((item, index) => (
               <button
-                key={index}
-                onClick={() => setFilteredCategory(item)}
-                className={`md:py-[16px] md:px-[35px] px-8 py-2 text-sm md:text-base rounded-full capitalize ${
-                  filteredCategory === item
-                    ? "bg-primaryColor text-secondaryColor"
-                    : "bg-transparent border-[2px]"
-                }`}
-              >
-                {item}
-              </button>
+              key={index}
+              onClick={() => setFilteredCategory(item)}
+              className={`md:py-[16px] md:px-[35px] px-8 py-2 text-sm md:text-base rounded-full capitalize ${
+                filteredCategory === item
+                  ? "bg-primaryColor text-secondaryColor"
+                  : "bg-transparent border-[2px]"
+              }`}
+            >
+              {item}
+            </button>
             ))}
           </div>
           <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-12 my-20 place-items-center w-fit text-center mx-auto ">
