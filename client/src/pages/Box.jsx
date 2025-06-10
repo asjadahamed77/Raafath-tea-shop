@@ -5,13 +5,13 @@ import { useToast } from "../context/ToastContext";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { allBoxes, allCakes, allCards } from "../redux/slices/userSlice";
-import { addCakesToCart } from "../redux/slices/cartSlice";
-
+import { addBoxToCart, addCakesToCart, addCardToCart, getCartBoxes, getCartCakes, getCartCards } from "../redux/slices/cartSlice";
 
 const Box = () => {
   const navigate = useNavigate();
   const { addToast } = useToast();
   const { cakes, cards, boxes } = useSelector((state) => state.user);
+  const { cartCakes, cartBoxes, cartCards } =useSelector((state)=> state.cart)
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
@@ -19,9 +19,7 @@ const Box = () => {
   const [chooseBox, setChooseBox] = useState(false);
   const [chooseCard, setChooseCard] = useState(false);
 
-
-
-
+ 
 
   const uniqueCategories = [...new Set(cakes.map((cake) => cake.category))];
 
@@ -30,60 +28,84 @@ const Box = () => {
       addToast("Please select at least one cake to proceed.", "error", 3000);
       return;
     }
-  
+
     try {
       for (const cakeId of selectedCakes) {
-        const cake = cakes.find(cake => cake._id === cakeId);
-        
-        
-  
+        const cake = cakes.find((cake) => cake._id === cakeId);
+
         if (!cake) {
           throw new Error("Selected cake not found.");
         }
-  
-        const result = await dispatch(addCakesToCart({
-          userId: user._id,
-          cakeId,
-          quantity: 1,
-          price: cake.cakePrice, 
-        
-          
-        }));
-        
-  
+
+        const result = await dispatch(
+          addCakesToCart({
+            userId: user._id,
+            cakeId,
+            quantity: 1,
+            price: cake.cakePrice,
+          })
+        );
+
         if (addCakesToCart.rejected.match(result)) {
           throw new Error(result.payload);
         }
       }
-  
+
       addToast("Cake(s) added to cart successfully!", "success", 3000);
       setChooseCake(false);
       setChooseBox(true);
       window.scrollTo(0, 0);
     } catch (error) {
-      addToast(error.message || "Something went wrong while adding cakes.", "error", 3000);
+      addToast(
+        error.message || "Something went wrong while adding cakes.",
+        "error",
+        3000
+      );
     }
   };
-  
-  
 
   const handleBack = () => {
     navigate("/#buildBox");
     setChooseBox(false);
   };
-
-  const handleNextBox = () => {
+  const handleNextBox = async () => {
     if (boxSelected === null) {
       addToast("Please select a box to proceed.", "error", 3000);
       return;
     }
-    setChooseBox(false);
-    setChooseCard(true);
-    addToast("Box selected successfully!", "success", 3000);
-
-    window.scrollTo(0, 0);
-  };
-
+    
+    const selectedBox = boxes[boxSelected];
+    if (!selectedBox) {
+      addToast("Selected box not found.", "error", 3000);
+      return;
+    }
+    
+    try {
+      const result = await dispatch(
+        addBoxToCart({
+          userId: user._id,
+          boxId: selectedBox._id,
+          quantity: 1,
+          price: selectedBox.boxPrice,
+        })
+      );
+  
+      if (addBoxToCart.rejected.match(result)) {
+        throw new Error(result.payload);
+      }
+  
+      setChooseBox(false);
+      setChooseCard(true);
+      addToast("Box selected successfully!", "success", 3000);
+      window.scrollTo(0, 0);
+    } catch (error) {
+      addToast(
+        error.message || "Something went wrong while adding the box.",
+        "error",
+        3000
+      );
+    }
+  }
   const handleBackBox = () => {
     setChooseBox(false);
     setChooseCake(true);
@@ -101,12 +123,13 @@ const Box = () => {
   const [cardSelected, setCardSelected] = useState(null);
 
   const toggleCakeSelection = (id) => {
+    getSelectedCart()
     if (selectedCakes.includes(id)) {
       setSelectedCakes(selectedCakes.filter((cakeId) => cakeId !== id));
-      addToast("Cake Removed", "success", 3000)
+      addToast("Cake Removed", "success", 3000);
     } else {
       setSelectedCakes([...selectedCakes, id]);
-      addToast("Cake Added", "success", 3000)
+      addToast("Cake Added", "success", 3000);
     }
   };
   const handleBoxSelect = (index) => {
@@ -117,39 +140,102 @@ const Box = () => {
   const [from, setFrom] = useState("");
   const [message, setMessage] = useState("");
 
-    const handleCardSelect = (index) => {
-        setCardSelected(index);
-    }
+  const handleCardSelect = (index) => {
+    setCardSelected(index);
+  };
 
-  const handleNextCard = () => {
+  const handleNextCard = async() => {
     if (cardSelected === null) {
-      addToast("Please select a card to proceed.", "error", 3000);
+      addToast("Please select a box to proceed.", "error", 3000);
+      return;
+    }
+    
+    const selectedCard = cards[cardSelected];
+    if (!selectedCard) {
+      addToast("Selected card not found.", "error", 3000);
       return;
     }
     if (!to || !from) {
       addToast("Please fill in all card details to proceed.", "error", 3000);
       return;
     }
+   
+    const result = await dispatch(
+      addCardToCart({
+        userId: user._id,
+        cardId: selectedCard._id,
+      
+        
+        quantity: 1,
+        price: selectedCard.cardPrice,
+        to,
+        from,
+        message
+      })
+    );
+
+    if (addCardToCart.rejected.match(result)) {
+      throw new Error(result.payload);
+    }
     addToast("Card selected successfully!", "success", 3000);
     navigate("/");
-  }
+  };
   const handleBackCard = () => {
     setChooseCard(false);
     setChooseBox(true);
     window.scrollTo(0, 0);
+  };
+
+  const getSelectedCart = ()=>{
+    dispatch(getCartCakes({userId: user._id}))
+    dispatch(getCartBoxes({userId: user._id}))
+    dispatch(getCartCards({userId: user._id}))
   }
 
-  useEffect(()=>{
+  
+
+  
+
+  useEffect(() => {
     dispatch(allCakes());
-  },[dispatch])
+    if (user?._id) {
+      dispatch(getCartCakes(user._id)); 
+    }
+  }, [dispatch, user?._id]);
+  useEffect(() => {
+    if (cartCakes?.length > 0 && cakes?.length > 0) {
+      const cakeIdsInCart = cartCakes.map(item => item.cakeId._id);
+      setSelectedCakes(cakeIdsInCart);
+    }
+  }, [cartCakes, cakes]);
 
-  useEffect(()=>{
+  useEffect(() => {
     dispatch(allBoxes());
-  },[dispatch])
-  useEffect(()=>{
-    dispatch(allCards());
-  },[dispatch])
+    if (user?._id) {
+      dispatch(getCartBoxes(user._id)); 
+    }
+  }, [dispatch, user?._id]);
 
+  useEffect(() => {
+    if (cartBoxes?.length > 0 && boxes?.length > 0) {
+      const boxIdsInCart = cartBoxes.map(item => item.boxId._id);
+      setBoxSelected(boxIdsInCart);
+    }
+  }, [cartCakes, cakes]);
+
+  useEffect(() => {
+    dispatch(allCards());
+    if (user?._id) {
+      dispatch(getCartCards(user._id)); 
+    }
+  }, [dispatch, user?._id]);
+
+  useEffect(() => {
+    if (cartCards?.length > 0 && cards?.length > 0) {
+      const cartIdsInCart = cartCards.map(item => item.cardId._id);
+      setBoxSelected(cartIdsInCart);
+    }
+  }, [cartCards, cards]);
   return (
     <div className="xl:px-[120px] lg:px-[40px] md:px-[20px] sm:px-[16px] px-4 py-20 flex flex-col  ">
       {chooseCake && (
@@ -178,16 +264,16 @@ const Box = () => {
             </button>
             {uniqueCategories.map((item, index) => (
               <button
-              key={index}
-              onClick={() => setFilteredCategory(item)}
-              className={`md:py-[16px] md:px-[35px] px-8 py-2 text-sm md:text-base rounded-full capitalize ${
-                filteredCategory === item
-                  ? "bg-primaryColor text-secondaryColor"
-                  : "bg-transparent border-[2px]"
-              }`}
-            >
-              {item}
-            </button>
+                key={index}
+                onClick={() => setFilteredCategory(item)}
+                className={`md:py-[16px] md:px-[35px] px-8 py-2 text-sm md:text-base rounded-full capitalize ${
+                  filteredCategory === item
+                    ? "bg-primaryColor text-secondaryColor"
+                    : "bg-transparent border-[2px]"
+                }`}
+              >
+                {item}
+              </button>
             ))}
           </div>
           <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-12 my-20 place-items-center w-fit text-center mx-auto ">
@@ -348,26 +434,26 @@ const Box = () => {
                 />
               </div>
               <div className="w-full">
-              <p className="text-[18px] font-light">Message</p>
-              <textarea className="focus:outline-none border-b-[2px] w-full h-[100px] resize-none"
-               
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-             />
+                <p className="text-[18px] font-light">Message</p>
+                <textarea
+                  className="focus:outline-none border-b-[2px] w-full h-[100px] resize-none"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                />
               </div>
               <div className="mt-16 flex justify-between items-center">
-              <button
-            onClick={handleBackCard}
-              className="text-sm md:text-base py-[15px] px-[40px] bg-transparent rounded-full border-[2px] font-light hover:opacity-75 duration-300 transition-opacity cursor-pointer"
-            >
-              Back
-            </button>
-            <button
-            onClick={handleNextCard}
-              className="text-sm md:text-base py-[15px] px-[40px] bg-primaryColor text-secondaryColor rounded-full border-[2px] font-light hover:opacity-75 duration-300 transition-opacity cursor-pointer"
-            >
-              Next
-            </button>
+                <button
+                  onClick={handleBackCard}
+                  className="text-sm md:text-base py-[15px] px-[40px] bg-transparent rounded-full border-[2px] font-light hover:opacity-75 duration-300 transition-opacity cursor-pointer"
+                >
+                  Back
+                </button>
+                <button
+                  onClick={handleNextCard}
+                  className="text-sm md:text-base py-[15px] px-[40px] bg-primaryColor text-secondaryColor rounded-full border-[2px] font-light hover:opacity-75 duration-300 transition-opacity cursor-pointer"
+                >
+                  Next
+                </button>
               </div>
             </div>
           </div>
@@ -375,6 +461,6 @@ const Box = () => {
       )}
     </div>
   );
-};
+}
 
 export default Box;
