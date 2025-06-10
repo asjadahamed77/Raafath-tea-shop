@@ -5,6 +5,7 @@ import { backendUrl } from "../../services/api";
 const initialState = {
   cartCakes: [],
   cartBoxes: [],
+  cartCards: [],
   loading: false,
   error: null,
 };
@@ -115,6 +116,57 @@ export const addBoxToCart = createAsyncThunk(
       }
     );
 
+      // Async thunk to add cakes to cart
+export const addCardToCart = createAsyncThunk(
+  "cart/addCardToCart",
+  async ({ cardId, price, quantity, to, from, message }, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.post(
+        `${backendUrl}/cart/add-card`,
+        { cardId, price, quantity, to, from, message},
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (data.success) {
+        return data.cart;
+      } else {
+        return rejectWithValue("Failed to add card to cart");
+      }
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to add card"
+      );
+    }
+  }
+);
+export const getCartCards = createAsyncThunk(
+    "cart/getCartCards", 
+    async (userId, { rejectWithValue }) => { // Remove the destructuring here
+      try {
+        const { data } = await axios.get(
+          `${backendUrl}/cart/get-cart-cards`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            params: { userId } // Pass userId as a query parameter
+          }
+        );
+        return data.cart;
+      } catch (error) {
+        return rejectWithValue(
+          error.response?.data?.message || "Failed to fetch cart"
+        );
+      }
+    }
+  );
+
 // Slice
 const cartSlice = createSlice({
   name: "cart",
@@ -171,6 +223,33 @@ const cartSlice = createSlice({
         state.cartBoxes = action.payload.boxes || [];
       })
       .addCase(getCartBoxes.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      .addCase(addCardToCart.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(addCardToCart.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = null;
+        state.cartCards = action.payload.cards; 
+      })
+      .addCase(addCardToCart.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(getCartCards.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getCartCards.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = null;
+        state.cartCards = action.payload.cards || [];
+      })
+      .addCase(getCartCards.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })

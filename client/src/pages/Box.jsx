@@ -5,19 +5,21 @@ import { useToast } from "../context/ToastContext";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { allBoxes, allCakes, allCards } from "../redux/slices/userSlice";
-import { addBoxToCart, addCakesToCart, getCartBoxes, getCartCakes } from "../redux/slices/cartSlice";
+import { addBoxToCart, addCakesToCart, addCardToCart, getCartBoxes, getCartCakes, getCartCards } from "../redux/slices/cartSlice";
 
 const Box = () => {
   const navigate = useNavigate();
   const { addToast } = useToast();
   const { cakes, cards, boxes } = useSelector((state) => state.user);
-  const { cartCakes, cartBoxes } =useSelector((state)=> state.cart)
+  const { cartCakes, cartBoxes, cartCards } =useSelector((state)=> state.cart)
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
   const [chooseCake, setChooseCake] = useState(true);
   const [chooseBox, setChooseBox] = useState(false);
   const [chooseCard, setChooseCard] = useState(false);
+
+ 
 
   const uniqueCategories = [...new Set(cakes.map((cake) => cake.category))];
 
@@ -142,14 +144,38 @@ const Box = () => {
     setCardSelected(index);
   };
 
-  const handleNextCard = () => {
+  const handleNextCard = async() => {
     if (cardSelected === null) {
-      addToast("Please select a card to proceed.", "error", 3000);
+      addToast("Please select a box to proceed.", "error", 3000);
+      return;
+    }
+    
+    const selectedCard = cards[cardSelected];
+    if (!selectedCard) {
+      addToast("Selected card not found.", "error", 3000);
       return;
     }
     if (!to || !from) {
       addToast("Please fill in all card details to proceed.", "error", 3000);
       return;
+    }
+   
+    const result = await dispatch(
+      addCardToCart({
+        userId: user._id,
+        cardId: selectedCard._id,
+      
+        
+        quantity: 1,
+        price: selectedCard.cardPrice,
+        to,
+        from,
+        message
+      })
+    );
+
+    if (addCardToCart.rejected.match(result)) {
+      throw new Error(result.payload);
     }
     addToast("Card selected successfully!", "success", 3000);
     navigate("/");
@@ -163,6 +189,7 @@ const Box = () => {
   const getSelectedCart = ()=>{
     dispatch(getCartCakes({userId: user._id}))
     dispatch(getCartBoxes({userId: user._id}))
+    dispatch(getCartCards({userId: user._id}))
   }
 
   
@@ -198,8 +225,17 @@ const Box = () => {
 
   useEffect(() => {
     dispatch(allCards());
-  }, [dispatch]);
+    if (user?._id) {
+      dispatch(getCartCards(user._id)); 
+    }
+  }, [dispatch, user?._id]);
 
+  useEffect(() => {
+    if (cartCards?.length > 0 && cards?.length > 0) {
+      const cartIdsInCart = cartCards.map(item => item.cardId._id);
+      setBoxSelected(cartIdsInCart);
+    }
+  }, [cartCards, cards]);
   return (
     <div className="xl:px-[120px] lg:px-[40px] md:px-[20px] sm:px-[16px] px-4 py-20 flex flex-col  ">
       {chooseCake && (
