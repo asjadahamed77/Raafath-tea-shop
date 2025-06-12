@@ -7,6 +7,7 @@ import Account from "./pages/Account"
 import Box from "./pages/Box"
 import Login from "./pages/Login"
 import CreateAccount from "./pages/CreateAccount"
+import Checkout from "./pages/Checkout"
 
 function App() {
   
@@ -19,6 +20,7 @@ function App() {
       <Route path="about" element ={ <About />} />
       <Route path="contact" element ={ <Contact />} />
       <Route path="account" element ={ <Account />} />
+      <Route path="checkout" element ={ <Checkout />} />
       <Route path="box" element ={ <Box />} />
       <Route path="login" element ={ <Login />} />
       <Route path="create-account" element ={ <CreateAccount />} />
