@@ -10,16 +10,22 @@ const checkoutSchema = new mongoose.Schema(
     items: [
       {
         cakes: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Cake",
+          cakeName: String,
+          cakePrice: Number,
+          quantity: Number
         },
         cards: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Card",
+          cardName: String,
+          cardPrice: Number,
+          to: String,
+          from: String,
+          message: String,
+          quantity: Number
         },
         boxes: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Box",
+          boxName: String,
+          boxPrice: Number,
+          quantity: Number
         },
         type: {
           type: String,

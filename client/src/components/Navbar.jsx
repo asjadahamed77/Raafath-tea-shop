@@ -22,7 +22,7 @@ const Navbar = () => {
         <Link to='/about' className='py-[16px] text-[18px] hover:opacity-80 duration-300 transition-opacity'>About</Link>
         <Link to='/contact' className='py-[16px] text-[18px] hover:opacity-80 duration-300 transition-opacity'>Contact</Link>
         <Link to={user ? '/account' : "/login"} className='py-[16px] text-[18px] hover:opacity-80 duration-300 transition-opacity'>Account</Link>
-        <Link to='/craft' className='flex items-center justify-center hover:opacity-80 duration-300 transition-opacity'>
+        <Link to='/box' className='flex items-center justify-center hover:opacity-80 duration-300 transition-opacity'>
           <button className='bg-primaryColor font-light text-secondaryColor px-[30px] py-[16px] rounded-[50px] text-[18px] cursor-pointer'>Craft</button>
         </Link>
       </div>
@@ -37,7 +37,7 @@ const Navbar = () => {
         <Link to='/about' onClick={toggleMobileMenu}>About</Link>
         <Link to='/contact' onClick={toggleMobileMenu}>Contact</Link>
         <Link to={user ? '/account' : "/login"}  onClick={toggleMobileMenu}>Account</Link>
-        <Link to='/craft' onClick={toggleMobileMenu}>
+        <Link to='/box' onClick={toggleMobileMenu}>
           <button className='bg-primaryColor font-light text-secondaryColor px-[30px] py-[16px] rounded-[50px] text-[18px] cursor-pointer'>Craft</button>
         </Link>
       </div>

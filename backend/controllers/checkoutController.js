@@ -7,11 +7,20 @@ export const getCheckout = async (req, res) => {
   const userId = req.user.id;
 
   try {
-    // Find all carts for the user
+    // Find all carts for the user and populate the item details
     const [cakes, boxes, cards] = await Promise.all([
-      cakeCartModel.findOne({ user: userId }),
-      boxCartModel.findOne({ user: userId }),
-      cardCartModel.findOne({ user: userId })
+      cakeCartModel.findOne({ user: userId }).populate({
+        path: 'cakes.cakeId',
+        select: 'cakeName cakePrice'
+      }),
+      boxCartModel.findOne({ user: userId }).populate({
+        path: 'boxes.boxId',
+        select: 'boxName boxPrice'
+      }),
+      cardCartModel.findOne({ user: userId }).populate({
+        path: 'cards.cardId',
+        select: 'cardName cardPrice'
+      })
     ]);
 
     // Check if at least one cart exists
@@ -25,25 +34,49 @@ export const getCheckout = async (req, res) => {
 
     if (cakes) {
       totalAmount += cakes.totalPrice;
-      items.push({
-        cakes: cakes._id,
-        type: 'cake'
+      // Map cake items with their details
+      cakes.cakes.forEach(cake => {
+        items.push({
+          cakes: {
+            cakeName: cake.cakeId.cakeName,
+            cakePrice: cake.cakeId.cakePrice,
+            quantity: cake.quantity
+          },
+          type: 'cake'
+        });
       });
     }
 
     if (boxes) {
       totalAmount += boxes.totalPrice;
-      items.push({
-        boxes: boxes._id,
-        type: 'box'
+      // Map box items with their details
+      boxes.boxes.forEach(box => {
+        items.push({
+          boxes: {
+            boxName: box.boxId.boxName,
+            boxPrice: box.boxId.boxPrice,
+            quantity: box.quantity
+          },
+          type: 'box'
+        });
       });
     }
 
     if (cards) {
       totalAmount += cards.totalPrice;
-      items.push({
-        cards: cards._id,
-        type: 'card'
+      // Map card items with their details
+      cards.cards.forEach(card => {
+        items.push({
+          cards: {
+            cardName: card.cardId.cardName,
+            cardPrice: card.cardId.cardPrice,
+            to: card.to,
+            from: card.from,
+            message: card.message,
+            quantity: card.quantity
+          },
+          type: 'card'
+        });
       });
     }
 
@@ -60,7 +93,7 @@ export const getCheckout = async (req, res) => {
       success: true,
       message: "Checkout created successfully",
       checkout: {
-        id: checkout._id,
+        _id: checkout._id,
         userId: checkout.userId,
         items: checkout.items,
         totalAmount: checkout.totalAmount,
@@ -72,5 +105,114 @@ export const getCheckout = async (req, res) => {
   } catch (error) {
     console.error("Error during checkout:", error);
     res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+// Confirm checkout
+export const confirmCheckout = async (req, res) => {
+  const { checkoutId } = req.params;
+  const userId = req.user.id;
+
+  try {
+    console.log('Confirming checkout:', { checkoutId, userId }); // Debug log
+
+    const checkout = await checkoutModel.findOne({ _id: checkoutId, userId });
+
+    if (!checkout) {
+      return res.status(404).json({
+        success: false,
+        message: "Checkout not found",
+      });
+    }
+
+    if (checkout.status !== "Pending") {
+      return res.status(400).json({
+        success: false,
+        message: "Checkout is not in pending status",
+      });
+    }
+
+    // Clear the user's carts after successful confirmation
+    await Promise.all([
+      cakeCartModel.findOneAndDelete({ user: userId }),
+      boxCartModel.findOneAndDelete({ user: userId }),
+      cardCartModel.findOneAndDelete({ user: userId }),
+    ]);
+
+    checkout.status = "Completed";
+    await checkout.save();
+
+    console.log('Checkout confirmed:', checkout); // Debug log
+
+    res.json({
+      success: true,
+      message: "Checkout confirmed successfully",
+      checkout: {
+        _id: checkout._id,
+        userId: checkout.userId,
+        items: checkout.items,
+        totalAmount: checkout.totalAmount,
+        status: checkout.status,
+        createdAt: checkout.createdAt,
+        updatedAt: checkout.updatedAt,
+      },
+    });
+  } catch (error) {
+    console.error("Error confirming checkout:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to confirm checkout",
+    });
+  }
+};
+
+// Cancel checkout
+export const cancelCheckout = async (req, res) => {
+  const { checkoutId } = req.params;
+  const userId = req.user.id;
+
+  try {
+    console.log('Cancelling checkout:', { checkoutId, userId }); // Debug log
+
+    const checkout = await checkoutModel.findOne({ _id: checkoutId, userId });
+
+    if (!checkout) {
+      return res.status(404).json({
+        success: false,
+        message: "Checkout not found",
+      });
+    }
+
+    if (checkout.status !== "Pending") {
+      return res.status(400).json({
+        success: false,
+        message: "Checkout is not in pending status",
+      });
+    }
+
+    checkout.status = "Cancelled";
+    await checkout.save();
+
+    console.log('Checkout cancelled:', checkout); // Debug log
+
+    res.json({
+      success: true,
+      message: "Checkout cancelled successfully",
+      checkout: {
+        _id: checkout._id,
+        userId: checkout.userId,
+        items: checkout.items,
+        totalAmount: checkout.totalAmount,
+        status: checkout.status,
+        createdAt: checkout.createdAt,
+        updatedAt: checkout.updatedAt,
+      },
+    });
+  } catch (error) {
+    console.error("Error cancelling checkout:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to cancel checkout",
+    });
   }
 };

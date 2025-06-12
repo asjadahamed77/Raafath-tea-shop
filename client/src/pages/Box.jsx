@@ -178,7 +178,7 @@ const Box = () => {
       throw new Error(result.payload);
     }
     addToast("Card selected successfully!", "success", 3000);
-    navigate("/");
+    navigate("/checkout");
   };
   const handleBackCard = () => {
     setChooseCard(false);
