@@ -35,9 +35,7 @@ const Users = () => {
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Email
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Phone
-              </th>
+             
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Joined Date
               </th>
@@ -69,12 +67,7 @@ const Users = () => {
                     {user.email}
                   </div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="flex items-center text-sm text-gray-500">
-                    <MdOutlinePhone className="mr-2" />
-                    {user.phone || 'N/A'}
-                  </div>
-                </td>
+               
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center text-sm text-gray-500">
                     <MdOutlineCalendarToday className="mr-2" />
@@ -119,11 +112,7 @@ const Users = () => {
                 <span className="font-medium">Email:</span>
                 <span className="ml-2">{selectedUser.email}</span>
               </div>
-              <div className="flex items-center">
-                <MdOutlinePhone className="mr-2 text-primaryColor" />
-                <span className="font-medium">Phone:</span>
-                <span className="ml-2">{selectedUser.phone || 'N/A'}</span>
-              </div>
+             
               <div className="flex items-center">
                 <MdOutlineCalendarToday className="mr-2 text-primaryColor" />
                 <span className="font-medium">Joined:</span>

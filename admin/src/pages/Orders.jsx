@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { toast } from 'react-hot-toast';
+import { toast, Toaster } from 'react-hot-toast';
 import { fetchOrders, updateOrderStatus } from '../redux/slices/orderSlice';
 import { MdPerson, MdEmail, MdPhone, MdLocationOn, MdShoppingCart } from 'react-icons/md';
 
@@ -36,6 +36,7 @@ const Orders = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      <Toaster position="top-right" />
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Orders</h1>
         <select
@@ -88,19 +89,13 @@ const Orders = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="flex items-center gap-2">
                   <MdPerson className="text-gray-400" />
-                  <span>{order.userId.name}</span>
+                  <span>{order.userId?.name || 'N/A'}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <MdEmail className="text-gray-400" />
-                  <span>{order.userId.email}</span>
+                  <span>{order.userId?.email || 'N/A'}</span>
                 </div>
-                {order.userId.phone && (
-                  <div className="flex items-center gap-2">
-                    <MdPhone className="text-gray-400" />
-                    <span>{order.userId.phone}</span>
-                  </div>
-                )}
-                {order.userId.address && (
+                {order.userId?.address && (
                   <div className="flex items-center gap-2">
                     <MdLocationOn className="text-gray-400" />
                     <span>
@@ -118,9 +113,9 @@ const Orders = () => {
                 Order Items
               </h3>
               <div className="space-y-4">
-                {order.items.map((item, index) => (
+                {order.items?.map((item, index) => (
                   <div key={index} className="border rounded-lg p-4">
-                    {item.type === 'cake' && (
+                    {item.type === 'cake' && item.cakes && (
                       <div>
                         <p className="font-semibold">{item.cakes.cakeName}</p>
                         <p className="text-sm text-gray-600">
@@ -128,7 +123,7 @@ const Orders = () => {
                         </p>
                       </div>
                     )}
-                    {item.type === 'box' && (
+                    {item.type === 'box' && item.boxes && (
                       <div>
                         <p className="font-semibold">{item.boxes.boxName}</p>
                         <p className="text-sm text-gray-600">
@@ -136,7 +131,7 @@ const Orders = () => {
                         </p>
                       </div>
                     )}
-                    {item.type === 'card' && (
+                    {item.type === 'card' && item.cards && (
                       <div>
                         <p className="font-semibold">{item.cards.cardName}</p>
                         <p className="text-sm text-gray-600">
@@ -158,7 +153,7 @@ const Orders = () => {
             <div className="p-4 bg-gray-50 border-t">
               <div className="flex justify-between items-center">
                 <span className="font-semibold">Total Amount:</span>
-                <span className="text-lg font-bold">Rs. {order.totalAmount}</span>
+                <span className="text-lg font-bold">Rs. {order.totalAmount || 0}</span>
               </div>
             </div>
           </div>
