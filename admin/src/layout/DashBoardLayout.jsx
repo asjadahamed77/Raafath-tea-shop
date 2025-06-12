@@ -5,9 +5,9 @@ import Navbar from '../components/Navbar';
 
 const DashBoardLayout = () => {
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex h-screen overflow-hidden bg-secondaryColor">
       {/* Fixed Sidebar (desktop only) */}
-      <div className="hidden md:block fixed top-0 left-0  h-full p-[15px] overflow-y-auto ">
+      <div className="hidden md:block fixed top-0 left-0  h-full p-[15px] overflow-y-auto bg-secondaryColor ">
         <Sidebar />
       </div>
       <div className='block md:hidden fixed top-0 left-0 right-0'>

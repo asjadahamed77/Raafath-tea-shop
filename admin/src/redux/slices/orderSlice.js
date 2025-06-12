@@ -1,17 +1,21 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { backendUrl } from '../../services/api';
 
 // Fetch all orders
 export const fetchOrders = createAsyncThunk(
   'order/fetchAll',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get('/api/admin/orders', {
-        withCredentials: true,
+      const response = await axios.get(`${backendUrl}/auth/admin/orders`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('adminToken')}`,
+        },
       });
-      return response.data.orders;
+      return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      console.error('Error fetching orders:', error);
+      return rejectWithValue(error.response?.data?.message || 'Failed to fetch orders');
     }
   }
 );
@@ -22,13 +26,18 @@ export const updateOrderStatus = createAsyncThunk(
   async ({ orderId, status }, { rejectWithValue }) => {
     try {
       const response = await axios.put(
-        `/api/admin/orders/${orderId}`,
+        `${backendUrl}/auth/admin/orders/${orderId}`,
         { status },
-        { withCredentials: true }
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('adminToken')}`,
+          },
+        }
       );
-      return response.data.order;
+      return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      console.error('Error updating order status:', error);
+      return rejectWithValue(error.response?.data?.message || 'Failed to update order status');
     }
   }
 );
@@ -61,7 +70,7 @@ const orderSlice = createSlice({
       })
       .addCase(fetchOrders.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload?.message || 'Failed to fetch orders';
+        state.error = action.payload;
       })
       // Update order status
       .addCase(updateOrderStatus.pending, (state) => {
@@ -77,7 +86,7 @@ const orderSlice = createSlice({
       })
       .addCase(updateOrderStatus.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload?.message || 'Failed to update order status';
+        state.error = action.payload;
       });
   },
 });

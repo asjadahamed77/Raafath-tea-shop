@@ -12,8 +12,6 @@ const initialState = {
   error: null,
 };
 
-const admintoken = localStorage.getItem("adminToken");
-
 // LOGIN
 export const login = createAsyncThunk(
   "auth/login",
@@ -29,7 +27,7 @@ export const login = createAsyncThunk(
       );
       if (data.success) {
         localStorage.setItem("adminToken", data.admintoken);
-        return data;
+        return { ...data, adminToken: data.admintoken };
       } else {
         return rejectWithValue(data.message);
       }
@@ -49,7 +47,7 @@ export const addCakes = createAsyncThunk(
         {
           headers: {
             "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${admintoken}`,
+            Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
           },
         }
       );
@@ -69,7 +67,7 @@ export const allCakes = createAsyncThunk(
       const { data } = await axios.get(`${backendUrl}/auth/admin/cakes`, {
         headers: {
           "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${admintoken}`,
+          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
         },
       });
       if (data.success) {
@@ -92,7 +90,7 @@ export const deleteCake = createAsyncThunk(
         {
           headers: {
             "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${admintoken}`,
+            Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
           },
         }
       );
@@ -118,7 +116,7 @@ export const addCard = createAsyncThunk(
         {
           headers: {
             "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${admintoken}`,
+            Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
           },
         }
       );
@@ -137,7 +135,7 @@ export const allCards = createAsyncThunk(
       const { data } = await axios.get(`${backendUrl}/auth/admin/cards`, {
         headers: {
           "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${admintoken}`,
+          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
         },
       });
       if (data.success) {
@@ -159,7 +157,7 @@ export const deleteCard = createAsyncThunk(
         {
           headers: {
             "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${admintoken}`,
+            Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
           },
         }
       );
@@ -186,7 +184,7 @@ export const addBox = createAsyncThunk(
         {
           headers: {
             "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${admintoken}`,
+            Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
           },
         }
       );
@@ -205,7 +203,7 @@ export const allBoxes = createAsyncThunk(
       const { data } = await axios.get(`${backendUrl}/auth/admin/boxes`, {
         headers: {
           "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${admintoken}`,
+          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
         },
       });
       if (data.success) {
@@ -227,7 +225,7 @@ export const deleteBox = createAsyncThunk(
         {
           headers: {
             "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${admintoken}`,
+            Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
           },
         }
       );
@@ -256,13 +254,11 @@ const authSlice = createSlice({
       state.admin = null;
       state.loading = false;
       state.error = null;
-
       localStorage.removeItem("adminToken");
     },
   },
   extraReducers: (builder) => {
     builder
-
       // LOGIN
       .addCase(login.pending, (state) => {
         state.loading = true;
@@ -270,7 +266,7 @@ const authSlice = createSlice({
       })
       .addCase(login.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload.user;
+        state.admin = action.payload;
       })
       .addCase(login.rejected, (state, action) => {
         state.loading = false;

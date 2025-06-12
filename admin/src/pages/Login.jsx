@@ -13,18 +13,25 @@ const Login = () => {
   const navigate = useNavigate()
   const { addToast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const submitHandler = async (e) => {
     e.preventDefault();
-    const result = await dispatch(login({ email, password }));
-  
-    if (login.fulfilled.match(result)) {
-      addToast("Login successfully", "success", 3000);
-      navigate("/");
-    } else {
-      addToast(result.payload || "Registration failed", "error", 3000);
+    setLoading(true);
+    try {
+      const result = await dispatch(login({ email, password })).unwrap();
+      if (result.success) {
+        addToast("Login successful", "success", 3000);
+        navigate("/");
+      } else {
+        addToast(result.message || "Login failed", "error", 3000);
+      }
+    } catch (error) {
+      addToast(error || "Login failed", "error", 3000);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -43,6 +50,7 @@ const Login = () => {
             className="bg-transparent focus:outline-none border-b w-full p-2"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            required
           />
 
           {/* Password Input with Toggle */}
@@ -53,6 +61,7 @@ const Login = () => {
               className="bg-transparent focus:outline-none w-full p-2"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              required
             />
             <div
               className="flex items-center justify-center w-[40px] h-[40px] cursor-pointer"
@@ -66,8 +75,11 @@ const Login = () => {
             </div>
           </div>
 
-          <button className="w-full rounded-full text-secondaryColor bg-primaryColor hover:opacity-65 duration-300 transition-opacity mt-16 text-[18px] font-light sm:h-[80px] h-[55px]">
-            Sign in
+          <button 
+            className="w-full rounded-full text-secondaryColor bg-primaryColor hover:opacity-65 duration-300 transition-opacity mt-16 text-[18px] font-light sm:h-[80px] h-[55px] disabled:opacity-50"
+            disabled={loading}
+          >
+            {loading ? "Signing in..." : "Sign in"}
           </button>
         </form>
       </div>

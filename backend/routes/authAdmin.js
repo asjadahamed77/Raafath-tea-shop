@@ -5,20 +5,34 @@ import upload from '../middlewares/multer.js'
 import { addCake, deleteCake, getAllCakes } from '../controllers/adminCakeController.js'
 import { addCard, deleteCard, getAllCards } from '../controllers/adminCardModel.js'
 import { addBox, deleteBox, getAllBoxes } from '../controllers/adminBoxController.js'
+import { getAllOrders, updateOrderStatus, getOrderStats } from '../controllers/adminOrderController.js'
+import { getAllUsers } from '../controllers/adminUserController.js'
 
 const adminAuthRouter = express.Router()
 
-adminAuthRouter.post('/login',adminLogin)
-adminAuthRouter.post('/add-cake', authAdmin,upload.single('cakeImage'), addCake )
+adminAuthRouter.post('/login', adminLogin)
+
+// Cake routes
 adminAuthRouter.get('/cakes', authAdmin, getAllCakes)
-adminAuthRouter.delete('/delete-cake/:id', authAdmin, deleteCake)
+adminAuthRouter.post('/cakes', authAdmin, upload.single('image'), addCake)
+adminAuthRouter.delete('/cakes/:id', authAdmin, deleteCake)
 
-adminAuthRouter.post('/add-card', authAdmin,upload.single('cardImage'), addCard )
-adminAuthRouter.get('/cards', authAdmin, getAllCards)
-adminAuthRouter.delete('/delete-card/:id', authAdmin, deleteCard)
-
-adminAuthRouter.post('/add-box', authAdmin,upload.single('boxImage'), addBox )
+// Box routes
 adminAuthRouter.get('/boxes', authAdmin, getAllBoxes)
-adminAuthRouter.delete('/delete-box/:id', authAdmin, deleteBox)
+adminAuthRouter.post('/boxes', authAdmin, upload.single('image'), addBox)
+adminAuthRouter.delete('/boxes/:id', authAdmin, deleteBox)
+
+// Card routes
+adminAuthRouter.get('/cards', authAdmin, getAllCards)
+adminAuthRouter.post('/cards', authAdmin, upload.single('image'), addCard)
+adminAuthRouter.delete('/cards/:id', authAdmin, deleteCard)
+
+// Order routes
+adminAuthRouter.get('/orders', authAdmin, getAllOrders)
+adminAuthRouter.put('/orders/:orderId', authAdmin, updateOrderStatus)
+adminAuthRouter.get('/orders/stats', authAdmin, getOrderStats)
+
+// User routes
+adminAuthRouter.get('/users', authAdmin, getAllUsers)
 
 export default adminAuthRouter
