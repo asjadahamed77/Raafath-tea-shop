@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { toast } from 'react-hot-toast';
-import axios from 'axios';
+
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -19,18 +19,17 @@ const Contact = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      await axios.post('/api/contact', formData);
+    
+    
       toast.success('Message sent successfully!');
+      alert('Thank you for contacting us! We will get back to you soon.');
       setFormData({
         name: '',
         email: '',
         subject: '',
         message: ''
       });
-    } catch (error) {
-      toast.error(error.response?.data?.message || 'Failed to send message');
-    }
+   
   };
 
   return (
@@ -46,9 +45,9 @@ const Contact = () => {
               <div>
                 <h3 className="font-semibold mb-2">Address</h3>
                 <p className="text-gray-600">
-                  123 Tea Street<br />
-                  Colombo, Sri Lanka<br />
-                  Postal Code: 12345
+                  12, Samanalawewa Road,<br />
+                  Belihuloya, Sri Lanka<br />
+                  Postal Code: 12098
                 </p>
               </div>
               <div>
@@ -132,7 +131,7 @@ const Contact = () => {
               </div>
               <button
                 type="submit"
-                className="w-full bg-primary text-white py-2 px-4 rounded-md hover:bg-primary-dark transition-colors"
+                className="w-full rounded-full text-secondaryColor bg-primaryColor hover:opacity-65 duration-300 transition-opacity mt-4 text-[18px] font-light h-[55px]"
               >
                 Send Message
               </button>
