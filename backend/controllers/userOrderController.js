@@ -3,13 +3,13 @@ import checkoutModel from '../models/checkout.js';
 // Get user orders
 export const getUserOrders = async (req, res) => {
   try {
-    console.log('Fetching orders for user:', req.user.id); // Debug log
+    
 
     const orders = await checkoutModel
       .find({ userId: req.user.id })
       .sort({ createdAt: -1 });
 
-    console.log('Found orders:', orders.length); // Debug log
+
 
     if (!orders) {
       return res.json({
@@ -23,6 +23,7 @@ export const getUserOrders = async (req, res) => {
       orders: orders.map(order => ({
         _id: order._id,
         userId: order.userId,
+      
         items: order.items,
         totalAmount: order.totalAmount,
         status: order.status,

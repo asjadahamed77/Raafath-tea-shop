@@ -13,13 +13,14 @@ const CreateAccount = () => {
   const navigate = useNavigate() 
   const [showPassword, setShowPassword] = useState(false);
   const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    const result = await dispatch(register({ name, email, password }));
+    const result = await dispatch(register({ name, email, password, phone }));
   
     if (register.fulfilled.match(result)) {
       addToast("Account created successfully", "success", 3000);
@@ -56,6 +57,14 @@ const CreateAccount = () => {
             className="bg-transparent focus:outline-none border-b w-full p-2 mt-12"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+          />
+
+<input
+            type="number"
+            placeholder="Phone"
+            className="bg-transparent focus:outline-none border-b w-full p-2 mt-12"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
           />
 
           {/* Password Input with Toggle */}

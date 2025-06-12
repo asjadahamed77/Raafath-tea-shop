@@ -7,6 +7,7 @@ import { MdPerson, MdEmail, MdPhone, MdLocationOn, MdShoppingCart } from 'react-
 const Orders = () => {
   const dispatch = useDispatch();
   const { orders, loading } = useSelector((state) => state.order);
+
   const [selectedStatus, setSelectedStatus] = useState('all');
 
   useEffect(() => {
@@ -95,6 +96,9 @@ const Orders = () => {
                   <MdEmail className="text-gray-400" />
                   <span>{order.userId?.email || 'N/A'}</span>
                 </div>
+               
+
+                
                 {order.userId?.address && (
                   <div className="flex items-center gap-2">
                     <MdLocationOn className="text-gray-400" />

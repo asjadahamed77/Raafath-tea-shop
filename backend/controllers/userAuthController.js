@@ -4,8 +4,8 @@ import userModel from "../models/userModel.js";
 import validator from "validator";
 
 export const registerUser = async (req, res) => {
-  const { name, email, password } = req.body;
-  if (!name || !email || !password) {
+  const { name, email, password, phone } = req.body;
+  if (!name || !email || !password || !phone) {
     return res.status(400).json({ message: "All fields are required" });
   }
   // Validate email format
@@ -33,6 +33,7 @@ export const registerUser = async (req, res) => {
     const user = new userModel({
       name,
       email,
+      phone,
       password: hashedPassword,
     });
 
