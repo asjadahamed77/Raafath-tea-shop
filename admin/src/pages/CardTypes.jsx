@@ -132,7 +132,7 @@ const CardTypes = () => {
       <div className="grid xl:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-[30px] mt-12">
         {currentItems.map((item) => (
           <div
-            key={item.id}
+            key={item._id}
             className="text-center flex flex-col items-center border-[1px] border-primaryColor/50 rounded-[15px] py-[20px] px-[65px]"
           >
             <img

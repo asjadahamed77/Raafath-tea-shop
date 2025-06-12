@@ -11,7 +11,7 @@ const initialState = {
     error: null,
   };
   
-  const token = localStorage.getItem("userToken");
+
 
   export const allCakes = createAsyncThunk(
     "auth/allCakes",
