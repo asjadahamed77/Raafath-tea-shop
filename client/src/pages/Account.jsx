@@ -62,7 +62,7 @@ const Account = () => {
               <h2 className="text-xl font-semibold mb-4">Personal Information</h2>
               <p className="mb-2"><span className="font-semibold">Name:</span> {user?.name}</p>
               <p className="mb-2"><span className="font-semibold">Email:</span> {user?.email}</p>
-              <p className="mb-2"><span className="font-semibold">Phone:</span> {user?.phone}</p>
+           
             </div>
             
           </div>
