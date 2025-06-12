@@ -6,6 +6,9 @@ const orderSchema = new mongoose.Schema({
     ref: 'User',
     required: true
   },
+  phone: {
+    type: String
+  },
   items: [{
     type: {
       type: String,

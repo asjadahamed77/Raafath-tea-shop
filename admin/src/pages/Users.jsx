@@ -35,6 +35,9 @@ const Users = () => {
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Email
               </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Phone
+              </th>
              
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Joined Date
@@ -67,6 +70,12 @@ const Users = () => {
                     {user.email}
                   </div>
                 </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="flex items-center text-sm text-gray-500">
+                    <MdOutlineEmail className="mr-2" />
+                    {user.phone}
+                  </div>
+                </td>
                
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center text-sm text-gray-500">
@@ -90,7 +99,7 @@ const Users = () => {
 
       {/* User Details Modal */}
       {selectedUser && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/40  flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-2xl font-bold">User Details</h2>
@@ -111,6 +120,11 @@ const Users = () => {
                 <MdOutlineEmail className="mr-2 text-primaryColor" />
                 <span className="font-medium">Email:</span>
                 <span className="ml-2">{selectedUser.email}</span>
+              </div>
+              <div className="flex items-center">
+                <MdOutlineEmail className="mr-2 text-primaryColor" />
+                <span className="font-medium">Phone:</span>
+                <span className="ml-2">{selectedUser.phone}</span>
               </div>
              
               <div className="flex items-center">

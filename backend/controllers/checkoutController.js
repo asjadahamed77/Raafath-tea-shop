@@ -84,6 +84,7 @@ export const getCheckout = async (req, res) => {
       userId,
       items,
       totalAmount,
+   
       status: "Pending",
     });
 
@@ -95,6 +96,7 @@ export const getCheckout = async (req, res) => {
       checkout: {
         _id: checkout._id,
         userId: checkout.userId,
+   
         items: checkout.items,
         totalAmount: checkout.totalAmount,
         status: checkout.status,
@@ -114,7 +116,7 @@ export const confirmCheckout = async (req, res) => {
   const userId = req.user.id;
 
   try {
-    console.log('Confirming checkout:', { checkoutId, userId }); // Debug log
+    
 
     const checkout = await checkoutModel.findOne({ _id: checkoutId, userId });
 
@@ -142,7 +144,7 @@ export const confirmCheckout = async (req, res) => {
     checkout.status = "Completed";
     await checkout.save();
 
-    console.log('Checkout confirmed:', checkout); // Debug log
+
 
     res.json({
       success: true,
@@ -150,6 +152,7 @@ export const confirmCheckout = async (req, res) => {
       checkout: {
         _id: checkout._id,
         userId: checkout.userId,
+        
         items: checkout.items,
         totalAmount: checkout.totalAmount,
         status: checkout.status,
@@ -172,7 +175,7 @@ export const cancelCheckout = async (req, res) => {
   const userId = req.user.id;
 
   try {
-    console.log('Cancelling checkout:', { checkoutId, userId }); // Debug log
+   
 
     const checkout = await checkoutModel.findOne({ _id: checkoutId, userId });
 
@@ -201,6 +204,7 @@ export const cancelCheckout = async (req, res) => {
       checkout: {
         _id: checkout._id,
         userId: checkout.userId,
+       
         items: checkout.items,
         totalAmount: checkout.totalAmount,
         status: checkout.status,

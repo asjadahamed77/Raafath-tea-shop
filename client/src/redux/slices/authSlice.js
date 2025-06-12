@@ -20,11 +20,11 @@ const token = localStorage.getItem("userToken");
 // REGISTER
 export const register = createAsyncThunk(
     "auth/register",
-    async ({ name, email, password }, { rejectWithValue }) => {
+    async ({ name, email, password, phone }, { rejectWithValue }) => {
       try {
         const { data } = await axios.post(
           `${backendUrl}/auth/register`,
-          { name, email, password },
+          { name, email, password, phone },
           {
             withCredentials: true,
             headers: { "Content-Type": "application/json" },

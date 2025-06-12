@@ -41,13 +41,13 @@ const Sidebar = () => {
 
     const SidebarContent = () => (
       <div className='bg-secondaryColor h-screen p-6'>
-        {/* Title */}
+      {/* Title */}
         <div className='mb-8'>
-          <h1 className='font-volgue text-[30px] font-[700]'>Raafest</h1>
-          <p className='text-[22px] font-[500]'>Admin Dashboard</p>
-        </div>
+        <h1 className='font-volgue text-[30px] font-[700]'>Raafest</h1>
+        <p className='text-[22px] font-[500]'>Admin Dashboard</p>
+      </div>
         <div className='flex flex-col gap-[10px]'>
-          {/* Navigation Links */}
+        {/* Navigation Links */}
           {menuItems.map((item) => (
             <Link 
               key={item.path}
@@ -62,20 +62,20 @@ const Sidebar = () => {
                 item.icon
               )}
               <p className='text-[18px] font-light'>{item.label}</p>
-            </Link>
+        </Link>
           ))}
           <div 
             onClick={logoutHandler} 
             className='flex items-center gap-[15px] rounded-[8px] p-[15px] cursor-pointer hover:opacity-55 duration-150 transition-opacity border border-primaryColor/10'
           >
-            <div>
-              <TbLogout2 className='text-[20px]' />
-            </div>
-            <p>Logout</p>
+          <div>
+            <TbLogout2 className='text-[20px]' />
           </div>
+          <p>Logout</p>
         </div>
       </div>
-    )
+    </div>
+  )
 
     return (
       <>
