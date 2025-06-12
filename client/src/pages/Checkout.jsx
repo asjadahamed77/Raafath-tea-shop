@@ -1,13 +1,14 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
 import { toast } from "react-hot-toast";
-import { createCheckout } from "../redux/slices/checkoutSlice";
+import { createCheckout, cancelCheckout, confirmCheckout } from "../redux/slices/checkoutSlice";
+import { refreshOrders } from "../redux/slices/orderSlice";
+import { useNavigate } from "react-router-dom";
 
 const Checkout = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { checkout, loading, error } = useSelector((state) => state.checkout);
-
 
   useEffect(() => {
     dispatch(createCheckout());
@@ -18,6 +19,28 @@ const Checkout = () => {
       toast.error(error);
     }
   }, [error]);
+
+  const handleConfirm = async () => {
+    try {
+      await dispatch(confirmCheckout(checkout._id)).unwrap();
+      await dispatch(refreshOrders());
+      toast.success("Order confirmed successfully!");
+      navigate("/account");
+    } catch (error) {
+      toast.error(error.message || "Failed to confirm order");
+    }
+  };
+
+  const handleCancel = async () => {
+    try {
+      await dispatch(cancelCheckout(checkout._id)).unwrap();
+      await dispatch(refreshOrders());
+      toast.success("Order cancelled successfully!");
+      navigate("/");
+    } catch (error) {
+      toast.error(error.message || "Failed to cancel order");
+    }
+  };
 
   if (loading) {
     return (
@@ -133,6 +156,22 @@ const Checkout = () => {
           <span className="text-lg">Total Amount:</span>
           <span className="text-2xl font-bold">Rs. {checkout.totalAmount}</span>
         </div>
+      </div>
+
+      {/* Action Buttons */}
+      <div className="mt-8 flex justify-end gap-4">
+        <button
+          onClick={handleCancel}
+          className="px-6 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors"
+        >
+          Cancel Order
+        </button>
+        <button
+          onClick={handleConfirm}
+          className="px-6 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors"
+        >
+          Confirm Order
+        </button>
       </div>
     </div>
   );

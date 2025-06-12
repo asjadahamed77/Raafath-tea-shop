@@ -93,7 +93,7 @@ export const getCheckout = async (req, res) => {
       success: true,
       message: "Checkout created successfully",
       checkout: {
-        id: checkout._id,
+        _id: checkout._id,
         userId: checkout.userId,
         items: checkout.items,
         totalAmount: checkout.totalAmount,
@@ -105,5 +105,114 @@ export const getCheckout = async (req, res) => {
   } catch (error) {
     console.error("Error during checkout:", error);
     res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+// Confirm checkout
+export const confirmCheckout = async (req, res) => {
+  const { checkoutId } = req.params;
+  const userId = req.user.id;
+
+  try {
+    console.log('Confirming checkout:', { checkoutId, userId }); // Debug log
+
+    const checkout = await checkoutModel.findOne({ _id: checkoutId, userId });
+
+    if (!checkout) {
+      return res.status(404).json({
+        success: false,
+        message: "Checkout not found",
+      });
+    }
+
+    if (checkout.status !== "Pending") {
+      return res.status(400).json({
+        success: false,
+        message: "Checkout is not in pending status",
+      });
+    }
+
+    // Clear the user's carts after successful confirmation
+    await Promise.all([
+      cakeCartModel.findOneAndDelete({ user: userId }),
+      boxCartModel.findOneAndDelete({ user: userId }),
+      cardCartModel.findOneAndDelete({ user: userId }),
+    ]);
+
+    checkout.status = "Completed";
+    await checkout.save();
+
+    console.log('Checkout confirmed:', checkout); // Debug log
+
+    res.json({
+      success: true,
+      message: "Checkout confirmed successfully",
+      checkout: {
+        _id: checkout._id,
+        userId: checkout.userId,
+        items: checkout.items,
+        totalAmount: checkout.totalAmount,
+        status: checkout.status,
+        createdAt: checkout.createdAt,
+        updatedAt: checkout.updatedAt,
+      },
+    });
+  } catch (error) {
+    console.error("Error confirming checkout:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to confirm checkout",
+    });
+  }
+};
+
+// Cancel checkout
+export const cancelCheckout = async (req, res) => {
+  const { checkoutId } = req.params;
+  const userId = req.user.id;
+
+  try {
+    console.log('Cancelling checkout:', { checkoutId, userId }); // Debug log
+
+    const checkout = await checkoutModel.findOne({ _id: checkoutId, userId });
+
+    if (!checkout) {
+      return res.status(404).json({
+        success: false,
+        message: "Checkout not found",
+      });
+    }
+
+    if (checkout.status !== "Pending") {
+      return res.status(400).json({
+        success: false,
+        message: "Checkout is not in pending status",
+      });
+    }
+
+    checkout.status = "Cancelled";
+    await checkout.save();
+
+    console.log('Checkout cancelled:', checkout); // Debug log
+
+    res.json({
+      success: true,
+      message: "Checkout cancelled successfully",
+      checkout: {
+        _id: checkout._id,
+        userId: checkout.userId,
+        items: checkout.items,
+        totalAmount: checkout.totalAmount,
+        status: checkout.status,
+        createdAt: checkout.createdAt,
+        updatedAt: checkout.updatedAt,
+      },
+    });
+  } catch (error) {
+    console.error("Error cancelling checkout:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to cancel checkout",
+    });
   }
 };
