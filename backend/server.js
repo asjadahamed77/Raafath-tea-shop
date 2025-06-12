@@ -6,6 +6,7 @@ import connectDB from './config/mongodb.js'
 import authRouter from './routes/authUser.js'
 import adminAuthRouter from './routes/authAdmin.js'
 import cartRouter from './routes/cartRoutes.js'
+import checkoutRouter from './routes/checkoutRoute.js'
 
 
 
@@ -33,6 +34,7 @@ app.use(cors({origin: allowedOrigins, credentials: true}))
 app.use('/api/auth', authRouter)
 app.use('/api/auth/admin', adminAuthRouter)
 app.use('/api/cart', cartRouter)
+app.use('/api/checkout', checkoutRouter)
 
 
 
