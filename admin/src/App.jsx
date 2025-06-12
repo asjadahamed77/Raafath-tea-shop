@@ -4,8 +4,9 @@ import DashBoardLayout from "./layout/DashBoardLayout"
 import CakeItems from "./pages/CakeItems"
 import BoxItems from "./pages/BoxItems"
 import CardTypes from "./pages/CardTypes"
-import DeliveryOptions from "./pages/DeliveryOptions"
-import PaymentProcesses from "./pages/PaymentProcesses"
+import Orders from "./pages/Orders"
+import Users from "./pages/Users"
+
 
 // Auth protection
 const ProtectedRoute = ({ children }) => {
@@ -35,8 +36,8 @@ function App() {
           <Route index element={<CakeItems />} />
           <Route path="box-items" element = { <BoxItems /> } />
           <Route path="card-types" element = { <CardTypes /> } />
-          <Route path="delivery-options" element = { <DeliveryOptions /> } />
-          <Route path="payment-processes" element = { <PaymentProcesses /> } />
+          <Route path="orders" element = { <Orders /> } />
+          <Route path="users" element = { <Users /> } />
         </Route>
     </Routes>
      </div>

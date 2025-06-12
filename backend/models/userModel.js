@@ -7,7 +7,11 @@ const userSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-
+    lastName: {
+      type: String,
+      trim: true,
+      default: "",
+    },
     email: {
       type: String,
       required: true,
@@ -22,10 +26,8 @@ const userSchema = new mongoose.Schema(
     },
     phone: {
       type: String,
-
       match: [/^\d{10}$/, "Please enter a valid phone number."],
     },
-
     address: {
       addressLine: {
         type: String,
@@ -41,6 +43,9 @@ const userSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+// Drop the existing unique index on lastName
+userSchema.index({ lastName: 1 }, { unique: false });
 
 const userModel = mongoose.models.User || mongoose.model("User", userSchema);
 

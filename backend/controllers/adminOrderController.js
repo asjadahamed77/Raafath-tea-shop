@@ -3,53 +3,41 @@ import checkoutModel from '../models/checkout.js';
 // Get all orders
 export const getAllOrders = async (req, res) => {
   try {
-    const orders = await checkoutModel
-      .find()
+    const orders = await checkoutModel.find({})
       .populate('userId', 'name email')
       .sort({ createdAt: -1 });
-
-    res.json({
-      success: true,
-      orders,
-    });
+    res.json(orders);
   } catch (error) {
     console.error('Error fetching orders:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to fetch orders',
-    });
+    res.status(500).json({ message: error.message });
   }
 };
 
 // Update order status
 export const updateOrderStatus = async (req, res) => {
-  const { orderId } = req.params;
-  const { status } = req.body;
-
   try {
-    const order = await checkoutModel.findByIdAndUpdate(
-      orderId,
-      { status },
-      { new: true }
-    ).populate('userId', 'name email');
+    const { orderId } = req.params;
+    const { status } = req.body;
 
-    if (!order) {
-      return res.status(404).json({
-        success: false,
-        message: 'Order not found',
-      });
+    if (!['Pending', 'Completed', 'Cancelled'].includes(status)) {
+      return res.status(400).json({ message: 'Invalid status' });
     }
 
-    res.json({
-      success: true,
-      order,
-    });
+    const order = await checkoutModel.findById(orderId);
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+
+    order.status = status;
+    await order.save();
+
+    const updatedOrder = await checkoutModel.findById(orderId)
+      .populate('userId', 'name email');
+
+    res.json(updatedOrder);
   } catch (error) {
     console.error('Error updating order status:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to update order status',
-    });
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -63,24 +51,18 @@ export const getOrderStats = async (req, res) => {
 
     const totalRevenue = await checkoutModel.aggregate([
       { $match: { status: 'Completed' } },
-      { $group: { _id: null, total: { $sum: '$totalAmount' } } },
+      { $group: { _id: null, total: { $sum: '$totalAmount' } } }
     ]);
 
     res.json({
-      success: true,
-      stats: {
-        totalOrders,
-        pendingOrders,
-        completedOrders,
-        cancelledOrders,
-        totalRevenue: totalRevenue[0]?.total || 0,
-      },
+      totalOrders,
+      pendingOrders,
+      completedOrders,
+      cancelledOrders,
+      totalRevenue: totalRevenue[0]?.total || 0,
     });
   } catch (error) {
-    console.error('Error fetching order statistics:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to fetch order statistics',
-    });
+    console.error('Error fetching order stats:', error);
+    res.status(500).json({ message: error.message });
   }
 }; 
