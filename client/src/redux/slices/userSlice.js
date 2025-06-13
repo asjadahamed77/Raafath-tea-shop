@@ -22,8 +22,13 @@ const initialState = {
             "Content-Type": "multipart/form-data",
       
           },
+       
+          
         });
+      
+        
         if (data.success) {
+          
           return data;
         }
       } catch (error) {
