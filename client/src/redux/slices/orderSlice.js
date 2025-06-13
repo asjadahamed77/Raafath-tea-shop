@@ -2,13 +2,19 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { backendUrl } from '../../services/api';
 
+
+const token = localStorage.getItem("userToken");
+
 // Fetch user orders
 export const fetchUserOrders = createAsyncThunk(
   'order/fetchUserOrders',
   async (_, { rejectWithValue }) => {
     try {
       const response = await axios.get(`${backendUrl}/checkout/user`, {
-        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       });
       return response.data.orders;
     } catch (error) {
@@ -23,7 +29,10 @@ export const refreshOrders = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await axios.get(`${backendUrl}/checkout/user`, {
-        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       });
       return response.data.orders;
     } catch (error) {
