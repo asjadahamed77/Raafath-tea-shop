@@ -7,6 +7,8 @@ import { useToast } from "../context/ToastContext";
 import { useDispatch, useSelector } from "react-redux";
 import { addCakes, allCakes, deleteCake } from "../redux/slices/authSlice";
 import { MdDeleteOutline } from "react-icons/md";
+import LoadingSpinner from "../components/LoadingSpinner";
+import ErrorMessage from "../components/ErrorMessage";
 
 const CakeItems = () => {
   const { addToast } = useToast();
@@ -67,7 +69,7 @@ const CakeItems = () => {
     const formData = new FormData();
     formData.append("cakeName", cakeName);
     formData.append("cakePrice", cakePrice);
-    formData.append("cakeImage", cakeImageFile);
+    formData.append("image", cakeImageFile);
     formData.append("category", category);
     try {
       await dispatch(addCakes(formData));
@@ -95,6 +97,14 @@ const CakeItems = () => {
   useEffect(() => {
     dispatch(allCakes());
   }, [dispatch]);
+
+  if (loading) {
+    return <LoadingSpinner />;
+  }
+
+  if (error) {
+    return <ErrorMessage message={error} />;
+  }
 
   return (
     <div className="">

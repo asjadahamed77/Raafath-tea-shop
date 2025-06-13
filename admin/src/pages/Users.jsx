@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUsers } from '../redux/slices/userSlice';
 import { MdOutlinePerson, MdOutlineEmail, MdOutlinePhone, MdOutlineCalendarToday } from 'react-icons/md';
+import LoadingSpinner from '../components/LoadingSpinner';
+import ErrorMessage from '../components/ErrorMessage';
 
 const Users = () => {
   const dispatch = useDispatch();
-  const { users, loading } = useSelector((state) => state.user);
+  const { users, loading, error } = useSelector((state) => state.user);
   const [selectedUser, setSelectedUser] = useState(null);
 
   useEffect(() => {
@@ -13,11 +15,11 @@ const Users = () => {
   }, [dispatch]);
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primaryColor"></div>
-      </div>
-    );
+    return <LoadingSpinner />;
+  }
+
+  if (error) {
+    return <ErrorMessage message={error} />;
   }
 
   return (

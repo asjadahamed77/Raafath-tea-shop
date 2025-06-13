@@ -1,18 +1,18 @@
 import React, { useState, useMemo, useEffect } from "react";
 import searchIcon from "../assets/icons/search-icon.png";
-
 import closeIcon from "../assets/icons/close.png";
 import imageUploadIcon from "../assets/icons/image-upload.png";
 import { RxCross2 } from "react-icons/rx";
-
 import { MdDeleteOutline } from "react-icons/md";
 import { useToast } from "../context/ToastContext";
 import { useDispatch, useSelector } from "react-redux";
 import { addCard, allCards, deleteCard } from "../redux/slices/authSlice";
+import LoadingSpinner from "../components/LoadingSpinner";
+import ErrorMessage from "../components/ErrorMessage";
 
 const CardTypes = () => {
   const { addToast } = useToast();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const { loading, error, cards } = useSelector((state) => state.auth);
   const [search, setSearch] = useState("");
   const [itemsPerPage, setItemsPerPage] = useState(4);
@@ -69,7 +69,7 @@ const CardTypes = () => {
     const formData = new FormData()
     formData.append("cardName", cardName)
     formData.append("cardPrice", cardPrice)
-    formData.append("cardImage",cardImageFile)
+    formData.append("image", cardImageFile)
     try {
       await dispatch(addCard(formData))
       setShowPopup(false)
@@ -94,6 +94,14 @@ const CardTypes = () => {
     dispatch(allCards())
     
   },[dispatch])
+
+  if (loading) {
+    return <LoadingSpinner />;
+  }
+
+  if (error) {
+    return <ErrorMessage message={error} />;
+  }
 
   return (
     <div className="">

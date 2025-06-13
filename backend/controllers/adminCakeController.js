@@ -32,7 +32,7 @@ export const addCake = async (req, res) => {
       cakeName,
       cakePrice,
       category,
-      cakeImage: uploadedImage, // store single image object
+      cakeImage: uploadedImage,
     });
 
     await newCake.save();

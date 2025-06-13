@@ -2,11 +2,18 @@ import boxCartModel from "../models/boxCart.js";
 import cakeCartModel from "../models/cakeCart.js";
 import cardCartModel from "../models/cardCart.js";
 import checkoutModel from "../models/checkout.js";
+import userModel from "../models/userModel.js";
 
 export const getCheckout = async (req, res) => {
   const userId = req.user.id;
 
   try {
+    // Get user details including phone number
+    const user = await userModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
     // Find all carts for the user and populate the item details
     const [cakes, boxes, cards] = await Promise.all([
       cakeCartModel.findOne({ user: userId }).populate({
@@ -84,7 +91,7 @@ export const getCheckout = async (req, res) => {
       userId,
       items,
       totalAmount,
-   
+      phone: user.phone, // Use the phone from user model
       status: "Pending",
     });
 
@@ -96,7 +103,7 @@ export const getCheckout = async (req, res) => {
       checkout: {
         _id: checkout._id,
         userId: checkout.userId,
-   
+        phone: checkout.phone,
         items: checkout.items,
         totalAmount: checkout.totalAmount,
         status: checkout.status,

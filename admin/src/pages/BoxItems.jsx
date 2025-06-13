@@ -1,6 +1,5 @@
 import React, { useState, useMemo, useEffect } from "react";
 import searchIcon from "../assets/icons/search-icon.png";
-
 import closeIcon from "../assets/icons/close.png";
 import imageUploadIcon from "../assets/icons/image-upload.png";
 import { RxCross2 } from "react-icons/rx";
@@ -8,11 +7,12 @@ import { MdDeleteOutline } from "react-icons/md";
 import { useToast } from "../context/ToastContext";
 import { useDispatch, useSelector } from "react-redux";
 import { addBox, allBoxes, deleteBox } from "../redux/slices/authSlice";
-
+import LoadingSpinner from "../components/LoadingSpinner";
+import ErrorMessage from "../components/ErrorMessage";
 
 const BoxItems = () => {
   const { addToast } = useToast();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const { loading, error, boxes } = useSelector((state) => state.auth);
   const [search, setSearch] = useState("");
   const [itemsPerPage, setItemsPerPage] = useState(4);
@@ -68,7 +68,7 @@ const BoxItems = () => {
     const formData = new FormData()
     formData.append("boxName", boxName)
     formData.append("boxPrice", boxPrice)
-    formData.append("boxImage",boxImageFile)
+    formData.append("image", boxImageFile)
     try {
       await dispatch(addBox(formData))
       setShowPopup(false)
@@ -93,6 +93,14 @@ const BoxItems = () => {
     dispatch(allBoxes())
     
   },[dispatch])
+
+  if (loading) {
+    return <LoadingSpinner />;
+  }
+
+  if (error) {
+    return <ErrorMessage message={error} />;
+  }
 
   return (
     <div className="">
@@ -131,7 +139,7 @@ const BoxItems = () => {
       <div className="grid xl:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-[30px] mt-12">
         {currentItems.map((item) => (
           <div
-            key={item.id}
+            key={item._id}
             className=" text-center flex flex-col items-center border-[1px] border-primaryColor/50 rounded-[15px] py-[20px] px-[65px]"
           >
              

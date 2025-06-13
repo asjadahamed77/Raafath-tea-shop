@@ -3,10 +3,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast, Toaster } from 'react-hot-toast';
 import { fetchOrders, updateOrderStatus } from '../redux/slices/orderSlice';
 import { MdPerson, MdEmail, MdPhone, MdLocationOn, MdShoppingCart } from 'react-icons/md';
+import LoadingSpinner from '../components/LoadingSpinner';
+import ErrorMessage from '../components/ErrorMessage';
 
 const Orders = () => {
   const dispatch = useDispatch();
-  const { orders, loading } = useSelector((state) => state.order);
+  const { orders, loading, error } = useSelector((state) => state.order);
 
   const [selectedStatus, setSelectedStatus] = useState('all');
 
@@ -28,11 +30,11 @@ const Orders = () => {
     : orders.filter(order => order.status === selectedStatus);
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-      </div>
-    );
+    return <LoadingSpinner />;
+  }
+
+  if (error) {
+    return <ErrorMessage message={error} />;
   }
 
   return (
