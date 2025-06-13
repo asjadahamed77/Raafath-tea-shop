@@ -5,13 +5,13 @@ import { useToast } from "../context/ToastContext";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { allBoxes, allCakes, allCards } from "../redux/slices/userSlice";
-import { addBoxToCart, addCakesToCart, addCardToCart, getCartBoxes, getCartCakes, getCartCards } from "../redux/slices/cartSlice";
+import { addBoxToCart, addCakesToCart, addCardToCart} from "../redux/slices/cartSlice";
 
 const Box = () => {
   const navigate = useNavigate();
   const { addToast } = useToast();
   const { cakes, cards, boxes } = useSelector((state) => state.user);
-  const { cartCakes, cartBoxes, cartCards } =useSelector((state)=> state.cart)
+  // const { cartCakes, cartBoxes, cartCards } =useSelector((state)=> state.cart)
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
@@ -123,7 +123,7 @@ const Box = () => {
   const [cardSelected, setCardSelected] = useState(null);
 
   const toggleCakeSelection = (id) => {
-    getSelectedCart()
+    // getSelectedCart()
     if (selectedCakes.includes(id)) {
       setSelectedCakes(selectedCakes.filter((cakeId) => cakeId !== id));
       addToast("Cake Removed", "success", 3000);
@@ -186,11 +186,11 @@ const Box = () => {
     window.scrollTo(0, 0);
   };
 
-  const getSelectedCart = ()=>{
-    dispatch(getCartCakes({userId: user._id}))
-    dispatch(getCartBoxes({userId: user._id}))
-    dispatch(getCartCards({userId: user._id}))
-  }
+  // const getSelectedCart = ()=>{
+  //   dispatch(getCartCakes({userId: user._id}))
+  //   dispatch(getCartBoxes({userId: user._id}))
+  //   dispatch(getCartCards({userId: user._id}))
+  // }
 
   
 
@@ -198,44 +198,44 @@ const Box = () => {
 
   useEffect(() => {
     dispatch(allCakes());
-    if (user?._id) {
-      dispatch(getCartCakes(user._id)); 
-    }
-  }, [dispatch, user?._id]);
-  useEffect(() => {
-    if (cartCakes?.length > 0 && cakes?.length > 0) {
-      const cakeIdsInCart = cartCakes.map(item => item.cakeId._id);
-      setSelectedCakes(cakeIdsInCart);
-    }
-  }, [cartCakes, cakes]);
+    // if (user?._id) {
+    //   dispatch(getCartCakes(user._id)); 
+    // }
+  }, [dispatch]);
+  // useEffect(() => {
+  //   if (cartCakes?.length > 0 && cakes?.length > 0) {
+  //     const cakeIdsInCart = cartCakes.map(item => item.cakeId._id);
+  //     setSelectedCakes(cakeIdsInCart);
+  //   }
+  // }, [cartCakes, cakes]);
 
   useEffect(() => {
     dispatch(allBoxes());
-    if (user?._id) {
-      dispatch(getCartBoxes(user._id)); 
-    }
-  }, [dispatch, user?._id]);
+    // if (user?._id) {
+    //   dispatch(getCartBoxes(user._id)); 
+    // }
+  }, [dispatch]);
 
-  useEffect(() => {
-    if (cartBoxes?.length > 0 && boxes?.length > 0) {
-      const boxIdsInCart = cartBoxes.map(item => item.boxId._id);
-      setBoxSelected(boxIdsInCart);
-    }
-  }, [cartCakes, cakes]);
+  // useEffect(() => {
+  //   if (cartBoxes?.length > 0 && boxes?.length > 0) {
+  //     const boxIdsInCart = cartBoxes.map(item => item.boxId._id);
+  //     setBoxSelected(boxIdsInCart);
+  //   }
+  // }, [cartCakes, cakes]);
 
   useEffect(() => {
     dispatch(allCards());
-    if (user?._id) {
-      dispatch(getCartCards(user._id)); 
-    }
-  }, [dispatch, user?._id]);
+    // if (user?._id) {
+    //   dispatch(getCartCards(user._id)); 
+    // }
+  }, [dispatch]);
 
-  useEffect(() => {
-    if (cartCards?.length > 0 && cards?.length > 0) {
-      const cartIdsInCart = cartCards.map(item => item.cardId._id);
-      setBoxSelected(cartIdsInCart);
-    }
-  }, [cartCards, cards]);
+  // useEffect(() => {
+  //   if (cartCards?.length > 0 && cards?.length > 0) {
+  //     const cartIdsInCart = cartCards.map(item => item.cardId._id);
+  //     setBoxSelected(cartIdsInCart);
+  //   }
+  // }, [cartCards, cards]);
   return (
     <div className="xl:px-[120px] lg:px-[40px] md:px-[20px] sm:px-[16px] px-4 py-20 flex flex-col  ">
       {chooseCake && (
