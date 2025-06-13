@@ -1,25 +1,43 @@
-import React, { useState } from "react";
-
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "../context/ToastContext";
-import { useSelector, useDispatch } from "react-redux";
-import { useEffect } from "react";
-import { allBoxes, allCakes, allCards } from "../redux/slices/userSlice";
-import { addBoxToCart, addCakesToCart, addCardToCart} from "../redux/slices/cartSlice";
+import { allCakes, allBoxes, allCards } from "../redux/slices/userSlice";
+import { addCakesToCart, addBoxToCart, addCardToCart } from "../redux/slices/cartSlice";
+import LoadingSpinner from "../components/LoadingSpinner";
+import ErrorMessage from "../components/ErrorMessage";
 
 const Box = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { addToast } = useToast();
-  const { cakes, cards, boxes } = useSelector((state) => state.user);
-  // const { cartCakes, cartBoxes, cartCards } =useSelector((state)=> state.cart)
   const { user } = useSelector((state) => state.auth);
-  const dispatch = useDispatch();
+  const { cakes, boxes, cards, loading, error } = useSelector((state) => state.user);
 
   const [chooseCake, setChooseCake] = useState(true);
   const [chooseBox, setChooseBox] = useState(false);
   const [chooseCard, setChooseCard] = useState(false);
+  const [filteredCategory, setFilteredCategory] = useState("all");
+  const [selectedCakes, setSelectedCakes] = useState([]);
+  const [boxSelected, setBoxSelected] = useState(null);
+  const [cardSelected, setCardSelected] = useState(null);
+  const [to, setTo] = useState("");
+  const [from, setFrom] = useState("");
+  const [message, setMessage] = useState("");
 
- 
+  useEffect(() => {
+    dispatch(allCakes());
+    dispatch(allBoxes());
+    dispatch(allCards());
+  }, [dispatch]);
+
+  if (loading) {
+    return <LoadingSpinner />;
+  }
+
+  if (error) {
+    return <ErrorMessage message={error} />;
+  }
 
   const uniqueCategories = [...new Set(cakes.map((cake) => cake.category))];
 
@@ -112,18 +130,12 @@ const Box = () => {
     window.scrollTo(0, 0);
   };
 
-  const [filteredCategory, setFilteredCategory] = useState("all");
   const displayedCakes =
     filteredCategory === "all"
       ? cakes
       : cakes.filter((cake) => cake.category === filteredCategory);
 
-  const [selectedCakes, setSelectedCakes] = useState([]);
-  const [boxSelected, setBoxSelected] = useState(null);
-  const [cardSelected, setCardSelected] = useState(null);
-
   const toggleCakeSelection = (id) => {
-    // getSelectedCart()
     if (selectedCakes.includes(id)) {
       setSelectedCakes(selectedCakes.filter((cakeId) => cakeId !== id));
       addToast("Cake Removed", "success", 3000);
@@ -135,10 +147,6 @@ const Box = () => {
   const handleBoxSelect = (index) => {
     setBoxSelected(index);
   };
-
-  const [to, setTo] = useState("");
-  const [from, setFrom] = useState("");
-  const [message, setMessage] = useState("");
 
   const handleCardSelect = (index) => {
     setCardSelected(index);
@@ -186,56 +194,6 @@ const Box = () => {
     window.scrollTo(0, 0);
   };
 
-  // const getSelectedCart = ()=>{
-  //   dispatch(getCartCakes({userId: user._id}))
-  //   dispatch(getCartBoxes({userId: user._id}))
-  //   dispatch(getCartCards({userId: user._id}))
-  // }
-
-  
-
-  
-
-  useEffect(() => {
-    dispatch(allCakes());
-    // if (user?._id) {
-    //   dispatch(getCartCakes(user._id)); 
-    // }
-  }, [dispatch]);
-  // useEffect(() => {
-  //   if (cartCakes?.length > 0 && cakes?.length > 0) {
-  //     const cakeIdsInCart = cartCakes.map(item => item.cakeId._id);
-  //     setSelectedCakes(cakeIdsInCart);
-  //   }
-  // }, [cartCakes, cakes]);
-
-  useEffect(() => {
-    dispatch(allBoxes());
-    // if (user?._id) {
-    //   dispatch(getCartBoxes(user._id)); 
-    // }
-  }, [dispatch]);
-
-  // useEffect(() => {
-  //   if (cartBoxes?.length > 0 && boxes?.length > 0) {
-  //     const boxIdsInCart = cartBoxes.map(item => item.boxId._id);
-  //     setBoxSelected(boxIdsInCart);
-  //   }
-  // }, [cartCakes, cakes]);
-
-  useEffect(() => {
-    dispatch(allCards());
-    // if (user?._id) {
-    //   dispatch(getCartCards(user._id)); 
-    // }
-  }, [dispatch]);
-
-  // useEffect(() => {
-  //   if (cartCards?.length > 0 && cards?.length > 0) {
-  //     const cartIdsInCart = cartCards.map(item => item.cardId._id);
-  //     setBoxSelected(cartIdsInCart);
-  //   }
-  // }, [cartCards, cards]);
   return (
     <div className="xl:px-[120px] lg:px-[40px] md:px-[20px] sm:px-[16px] px-4 py-20 flex flex-col  ">
       {chooseCake && (
@@ -246,8 +204,8 @@ const Box = () => {
             </h1>
             <p className="w-[80%] text-center font-light leading-6 mt-[-30px] text-[18px]">
               From cute bento cakes to celebration-sized classics, explore a
-              variety of flavors, shapes, and styles. Whether it’s a birthday, a
-              surprise, or just a sweet craving, we’ve got something freshly
+              variety of flavors, shapes, and styles. Whether it's a birthday, a
+              surprise, or just a sweet craving, we've got something freshly
               baked for you.
             </p>
           </div>
@@ -384,8 +342,8 @@ const Box = () => {
             </h1>
             <p className="w-[80%] text-center font-light leading-6 mt-[-30px] text-[18px]">
               Add a heartfelt message, funny note, or even an inside joke. This
-              is your moment to express what words a cake alone can’t — and
-              we’ll make sure it’s written just right.
+              is your moment to express what words a cake alone can't — and
+              we'll make sure it's written just right.
             </p>
           </div>
           <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-12 my-20 place-items-center ">

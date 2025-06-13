@@ -4,6 +4,8 @@ import { toast } from "react-hot-toast";
 import { createCheckout, cancelCheckout, confirmCheckout } from "../redux/slices/checkoutSlice";
 import { refreshOrders } from "../redux/slices/orderSlice";
 import { useNavigate } from "react-router-dom";
+import LoadingSpinner from "../components/LoadingSpinner";
+import ErrorMessage from "../components/ErrorMessage";
 
 const Checkout = () => {
   const dispatch = useDispatch();
@@ -43,11 +45,11 @@ const Checkout = () => {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-      </div>
-    );
+    return <LoadingSpinner />;
+  }
+
+  if (error) {
+    return <ErrorMessage message={error} />;
   }
 
   if (!checkout) {

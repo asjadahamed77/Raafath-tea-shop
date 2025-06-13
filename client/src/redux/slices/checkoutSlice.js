@@ -2,14 +2,16 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { backendUrl } from "../../services/api";
 
-
-const token = localStorage.getItem("userToken");
-
 // Async thunk for creating checkout
 export const createCheckout = createAsyncThunk(
   "checkout/create",
   async (_, { rejectWithValue }) => {
     try {
+      const token = localStorage.getItem("userToken");
+      if (!token) {
+        return rejectWithValue({ message: "No authentication token found" });
+      }
+
       const response = await axios.get(`${backendUrl}/checkout`, {
         headers: {
           "Content-Type": "application/json",
@@ -18,7 +20,7 @@ export const createCheckout = createAsyncThunk(
       });
       return response.data.checkout;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(error.response?.data || { message: "Failed to create checkout" });
     }
   }
 );
@@ -28,17 +30,24 @@ export const confirmCheckout = createAsyncThunk(
   "checkout/confirm",
   async (checkoutId, { rejectWithValue }) => {
     try {
+      const token = localStorage.getItem("userToken");
+      if (!token) {
+        return rejectWithValue({ message: "No authentication token found" });
+      }
+
       const response = await axios.put(
         `${backendUrl}/checkout/${checkoutId}/confirm`,
         {},
-        {  headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },}
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       return response.data.checkout;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(error.response?.data || { message: "Failed to confirm checkout" });
     }
   }
 );
@@ -48,17 +57,24 @@ export const cancelCheckout = createAsyncThunk(
   "checkout/cancel",
   async (checkoutId, { rejectWithValue }) => {
     try {
+      const token = localStorage.getItem("userToken");
+      if (!token) {
+        return rejectWithValue({ message: "No authentication token found" });
+      }
+
       const response = await axios.put(
         `${backendUrl}/checkout/${checkoutId}/cancel`,
         {},
-        {  headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        }, }
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       return response.data.checkout;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(error.response?.data || { message: "Failed to cancel checkout" });
     }
   }
 );
