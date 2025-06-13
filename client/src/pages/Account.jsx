@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { logout } from '../redux/slices/authSlice';
 import { fetchUserOrders } from '../redux/slices/orderSlice';
+import LoadingSpinner from '../components/LoadingSpinner';
+import ErrorMessage from '../components/ErrorMessage';
 
 const Account = () => {
   const dispatch = useDispatch();
@@ -32,11 +34,11 @@ const Account = () => {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-      </div>
-    );
+    return <LoadingSpinner />;
+  }
+
+  if (error) {
+    return <ErrorMessage message={error} />;
   }
 
   if (!user) {

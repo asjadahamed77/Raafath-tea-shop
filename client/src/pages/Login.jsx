@@ -5,6 +5,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../redux/slices/authSlice";
 import { useToast } from "../context/ToastContext";
+import LoadingSpinner from "../components/LoadingSpinner";
+import ErrorMessage from "../components/ErrorMessage";
 
 const Login = () => {
   const dispatch = useDispatch()
@@ -26,6 +28,14 @@ const Login = () => {
       addToast(result.payload || "Registration failed", "error", 3000);
     }
   };
+
+  if (loading) {
+    return <LoadingSpinner />;
+  }
+
+  if (error) {
+    return <ErrorMessage message={error} />;
+  }
 
   return (
     <div className="xl:px-[120px] lg:px-[40px] md:px-[20px] sm:px-[16px] px-4 py-20">
@@ -69,8 +79,11 @@ const Login = () => {
             </div>
           </div>
 
-          <button className="w-full rounded-full text-secondaryColor bg-primaryColor hover:opacity-65 duration-300 transition-opacity mt-16 text-[18px] font-light sm:h-[80px] h-[55px]">
-            Sign in
+          <button 
+            className="w-full rounded-full text-secondaryColor bg-primaryColor hover:opacity-65 duration-300 transition-opacity mt-16 text-[18px] font-light sm:h-[80px] h-[55px] disabled:opacity-50"
+            disabled={loading}
+          >
+            {loading ? "Signing in..." : "Sign in"}
           </button>
         </form>
 
@@ -79,7 +92,7 @@ const Login = () => {
         </p>
 
         <p className="mt-8 text-[18px] text-center font-extralight">
-          Don’t have an account? Sign up{" "}
+          Don't have an account? Sign up{" "}
           <Link
             to={"/create-account"}
             className="underline font-normal cursor-pointer hover:opacity-65 duration-300 transition-opacity"

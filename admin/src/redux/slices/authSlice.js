@@ -86,7 +86,7 @@ export const deleteCake = createAsyncThunk(
   async (cakeId, { rejectWithValue }) => {
     try {
       const { data } = await axios.delete(
-        `${backendUrl}/auth/admin/delete-cake/${cakeId}`,
+        `${backendUrl}/auth/admin/cakes/${cakeId}`,
         {
           headers: {
             "Content-Type": "multipart/form-data",
@@ -150,10 +150,10 @@ export const allCards = createAsyncThunk(
 );
 export const deleteCard = createAsyncThunk(
   "auth/deleteCard",
-  async (cakeId, { rejectWithValue }) => {
+  async (cardId, { rejectWithValue }) => {
     try {
       const { data } = await axios.delete(
-        `${backendUrl}/auth/admin/delete-card/${cakeId}`,
+        `${backendUrl}/auth/admin/cards/${cardId}`,
         {
           headers: {
             "Content-Type": "multipart/form-data",
@@ -162,7 +162,7 @@ export const deleteCard = createAsyncThunk(
         }
       );
       if (data.success) {
-        return { id: cakeId };
+        return { id: cardId };
       } else {
         return rejectWithValue(data.message);
       }
@@ -221,7 +221,7 @@ export const deleteBox = createAsyncThunk(
   async (boxId, { rejectWithValue }) => {
     try {
       const { data } = await axios.delete(
-        `${backendUrl}/auth/admin/delete-box/${boxId}`,
+        `${backendUrl}/auth/admin/boxes/${boxId}`,
         {
           headers: {
             "Content-Type": "multipart/form-data",

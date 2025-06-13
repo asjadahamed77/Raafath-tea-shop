@@ -14,17 +14,17 @@ adminAuthRouter.post('/login', adminLogin)
 
 // Cake routes
 adminAuthRouter.get('/cakes', authAdmin, getAllCakes)
-adminAuthRouter.post('/cakes', authAdmin, upload.single('image'), addCake)
+adminAuthRouter.post('/add-cake', authAdmin, upload.single('image'), addCake)
 adminAuthRouter.delete('/cakes/:id', authAdmin, deleteCake)
 
 // Box routes
 adminAuthRouter.get('/boxes', authAdmin, getAllBoxes)
-adminAuthRouter.post('/boxes', authAdmin, upload.single('image'), addBox)
+adminAuthRouter.post('/add-box', authAdmin, upload.single('image'), addBox)
 adminAuthRouter.delete('/boxes/:id', authAdmin, deleteBox)
 
 // Card routes
 adminAuthRouter.get('/cards', authAdmin, getAllCards)
-adminAuthRouter.post('/cards', authAdmin, upload.single('image'), addCard)
+adminAuthRouter.post('/add-card', authAdmin, upload.single('image'), addCard)
 adminAuthRouter.delete('/cards/:id', authAdmin, deleteCard)
 
 // Order routes
