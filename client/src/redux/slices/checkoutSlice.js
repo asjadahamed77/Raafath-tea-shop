@@ -2,13 +2,19 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { backendUrl } from "../../services/api";
 
+
+const token = localStorage.getItem("userToken");
+
 // Async thunk for creating checkout
 export const createCheckout = createAsyncThunk(
   "checkout/create",
   async (_, { rejectWithValue }) => {
     try {
       const response = await axios.get(`${backendUrl}/checkout`, {
-        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       });
       return response.data.checkout;
     } catch (error) {
@@ -25,7 +31,10 @@ export const confirmCheckout = createAsyncThunk(
       const response = await axios.put(
         `${backendUrl}/checkout/${checkoutId}/confirm`,
         {},
-        { withCredentials: true }
+        {  headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },}
       );
       return response.data.checkout;
     } catch (error) {
@@ -42,7 +51,10 @@ export const cancelCheckout = createAsyncThunk(
       const response = await axios.put(
         `${backendUrl}/checkout/${checkoutId}/cancel`,
         {},
-        { withCredentials: true }
+        {  headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        }, }
       );
       return response.data.checkout;
     } catch (error) {

@@ -391,7 +391,7 @@ const Box = () => {
           <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-12 my-20 place-items-center ">
             {cards.map((item, index) => (
               <div
-                key={item.id}
+                key={item._id}
                 onClick={() => handleCardSelect(index)}
                 className={`lg:w-[370px] h-[435px] flex flex-col items-center py-[50px] px-[75px] rounded-[30px] shadow-[4px_4px_14px_0]/30 hover:shadow-[4px_4px_14px_0]/70 cursor-pointer  ${
                   cardSelected === index
