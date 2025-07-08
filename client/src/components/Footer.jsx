@@ -17,8 +17,9 @@ const Footer = () => {
         <div>
           <p className="text-[25px] font-[500]">Locate us</p>
           <p className="text-[18px] font-light leading-6 mt-[24px]">
-            No. 158/18b, Lower Road,
-            <br /> Orr’s hill, Trincomalee
+           Samanalawewa Road,
+            <br /> 
+            Belihuloya, Sri Lanka
           </p>
         </div>
         {/* Aboot */}
